@@ -59,6 +59,8 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Templating.Compilation
             var result = CommonUtilities.GetAssemblyFromCompilation(_loader, compilation);
             if (result.Success)
             {
+                var assembly = result.Assembly;
+                var types = assembly.GetExportedTypes();
                 var type = result.Assembly.GetExportedTypes()
                                    .First();
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Internal;
 
-namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
+namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
 {
     internal class DotNetBuildCommandHelper
     {
@@ -30,8 +30,8 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
                     ? Path.Combine(Directory.GetCurrentDirectory(), buildBasePath)
                     : buildBasePath;
 
-                args.Add("--build-base-path");
-                args.Add(buildBasePath);
+/*                args.Add("--build-base-path");
+                args.Add(buildBasePath);*/
             }
 
             var stdOutMsgs = new List<string>();

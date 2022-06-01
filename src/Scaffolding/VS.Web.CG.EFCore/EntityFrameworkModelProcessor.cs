@@ -20,6 +20,7 @@ using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 using System.Collections;
+using Microsoft.VisualStudio.Web.CodeGeneration.Utils.DotNet;
 
 namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
 {
@@ -78,7 +79,6 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
             _fileSystem = fileSystem;
             _workspace = workspace;
             _useSqlite = useSqlite;
-
             _assemblyAttributeGenerator = GetAssemblyAttributeGenerator();
         }
 
@@ -117,7 +117,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 {
                     await EnsureDbContextInLibraryIsValid(dbContextSymbols.First());
                 }
-
+                //var allTypes = _reflectedTypesProvider.GetAllTypesInProject();
                 var dbContextType = _reflectedTypesProvider.GetReflectedType(
                   modelType: _dbContextFullTypeName,
                   lookInDependencies: true);
@@ -417,7 +417,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 projectCompilation,
                 c =>
                 {
-                    c = c.AddSyntaxTrees(assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
+                   // c = c.AddSyntaxTrees(assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
                     c = c.AddSyntaxTrees(_dbContextSyntaxTree);
                     if (_programEditResult.Edited)
                     {
@@ -590,9 +590,16 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
 
         private AssemblyAttributeGenerator GetAssemblyAttributeGenerator()
         {
-            var originalAssembly = _loader.LoadFromName(
-                new AssemblyName(
-                    Path.GetFileNameWithoutExtension(_projectContext.AssemblyName)));
+            Assembly originalAssembly;
+            try
+            {
+                originalAssembly = _loader.LoadFromName(new AssemblyName(Path.GetFileNameWithoutExtension(_projectContext.AssemblyName)));
+            }
+            catch (FileNotFoundException)
+            {
+                originalAssembly = _loader.LoadFromPath(_projectContext.AssemblyFullPath);
+            }
+                
             return new AssemblyAttributeGenerator(originalAssembly);
         }
 

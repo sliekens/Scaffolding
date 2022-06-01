@@ -3,7 +3,15 @@ using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.DotNet.Scaffolding.Shared.Cli.Utils;
+using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
+using Microsoft.Extensions.ProjectModel;
+using Microsoft.VisualStudio.Web.CodeGeneration.Design;
+using Microsoft.VisualStudio.Web.CodeGeneration.Utils.DotNet;
 
 namespace Microsoft.DotNet.Tools.Scaffold
 {
@@ -15,6 +23,19 @@ namespace Microsoft.DotNet.Tools.Scaffold
         private const string IDENTITY_COMMAND = "identity";
         private const string RAZORPAGE_COMMAND = "razorpage";
         private const string VIEW_COMMAND = "view";
+
+        private static ConsoleLogger _logger;
+        public static ConsoleLogger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new ConsoleLogger();
+                }
+                return _logger;
+            }
+        }
         /* 
         dotnet scaffold [generator] [-p|--project] [-n|--nuget-package-dir] [-c|--configuration] [-tfm|--target-framework] [-b|--build-base-path] [--no-build] 
 
@@ -71,11 +92,67 @@ namespace Microsoft.DotNet.Tools.Scaffold
                         // The help option for the commands are handled by System.Commandline.
                         return 0;
                     }
-                    return VisualStudio.Web.CodeGeneration.Tools.Program.Main(args);
+                    return ExecuteCodeGenDesign(args);
                 default:
                     // The command is not handled by 'dotnet scaffold'.
                     return -1;
             }
+        }
+        private static string GetTargetsLocation()
+        {
+            const string build = nameof(build);
+            var assembly = typeof(Program).GetTypeInfo().Assembly;
+            var path = Path.GetDirectoryName(assembly.Location);
+            // Crawl up from assembly location till we find 'build' directory.
+            do
+            {
+                if (Directory.EnumerateDirectories(path, build, SearchOption.TopDirectoryOnly).Any())
+                {
+                    return path;
+                }
+
+                path = Path.GetDirectoryName(path);
+            } while (path != null);
+
+            throw new DirectoryNotFoundException("Targets not found ha");
+        }
+
+
+        private static int ExecuteCodeGenDesign(string[] args)
+        {
+            System.Diagnostics.Debugger.Launch();
+            AssemblyLocator.Init();
+            string projectPath = string.Empty;
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                projectPath = Directory.GetCurrentDirectory();
+            }
+
+            projectPath = Path.GetFullPath(projectPath);
+            ProjectFileFinder fileFinder = new ProjectFileFinder(projectPath);
+            if (fileFinder.IsMsBuildProject)
+            {
+                var targetsPath = GetTargetsLocation();
+                var ensureTargetImported = new TargetInstaller(Logger).EnsureTargetImported(
+                    Path.GetFileName(fileFinder.ProjectFilePath),
+                    Path.Combine(Path.GetDirectoryName(fileFinder.ProjectFilePath), "obj"));
+
+                MsBuildProjectContextBuilder msBuildProjectContextBuilder = new MsBuildProjectContextBuilder(fileFinder.ProjectFilePath, targetsPath);
+                var projectInformation = msBuildProjectContextBuilder.Build();
+                string projectAssetsFile = ProjectModelHelper.GetProjectAssetsFile(projectInformation);
+                projectInformation = projectInformation.AddPackageDependencies(projectAssetsFile);
+                projectInformation = projectInformation.AddCompilationAssemblies(targetsPath);
+
+                Build(Logger, fileFinder.ProjectFilePath, projectInformation.TargetFramework, projectPath);
+                CodeGenCommandExecutor executor = new CodeGenCommandExecutor(projectInformation,
+                    args,
+                    "Debug",
+                    Logger,
+                    false);
+
+                return executor.Execute();
+            }
+            return -1;
         }
 
         private static Option ProjectOption() =>
@@ -415,5 +492,31 @@ namespace Microsoft.DotNet.Tools.Scaffold
                 DBContextOption(), FilesListOption(), ListFilesOption(), UserClassOption(), UseSQLliteOption(), OverwriteFilesOption(), UseDefaultUIOption(), CustomLayoutOption(), 
                 GenerateLayoutOption(), BootStrapVersionOption()
             };
+
+        private static int Build(ILogger logger, string projectPath, string shortFramework, string buildBasePath)
+        {
+
+            logger.LogMessage("Building project ...");
+            var buildResult = DotNetBuildCommandHelper.Build(
+                projectPath,
+                "Debug",
+                shortFramework,
+                buildBasePath);
+
+            if (buildResult.Result.ExitCode != 0)
+            {
+                //Build failed. 
+                // Stop the process here. 
+                logger.LogMessage("Build failed!\n");
+                logger.LogMessage(string.Join(Environment.NewLine, buildResult.StdOut), LogMessageLevel.Error);
+                logger.LogMessage(string.Join(Environment.NewLine, buildResult.StdErr), LogMessageLevel.Error);
+            }
+            else
+            {
+                logger.LogMessage("Build succeeded!\n");
+            }
+
+            return buildResult.Result.ExitCode;
+        }
     }
 }
