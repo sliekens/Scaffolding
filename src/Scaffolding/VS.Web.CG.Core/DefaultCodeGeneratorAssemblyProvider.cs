@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
@@ -18,6 +19,9 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
             {
                 "Microsoft.VisualStudio.Web.CodeGeneration",
             };
+
+        private static readonly string _codeGeneratorAssembly = "Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll";
+
         private static readonly HashSet<string> _exclusions =
             new HashSet<string>(StringComparer.Ordinal)
             {
@@ -52,7 +56,22 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
                     .SelectMany(_projectContext.GetReferencingPackages)
                     .Distinct()
                     .Where(IsCandidateLibrary);
-                return list.Select(lib => _assemblyLoadContext.LoadFromName(new AssemblyName(lib.Name)));
+                if (list == null || !list.Any())
+                {
+                    var assemblyList = new List<Assembly>();
+                    var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                    var assemblyDirectory = Path.GetFullPath(Path.GetDirectoryName(assemblyPath));
+                    var codeGeneratorAssemblyPath = Path.Combine(assemblyDirectory, _codeGeneratorAssembly);
+                    if (File.Exists(codeGeneratorAssemblyPath))
+                    {
+                        assemblyList.Add(_assemblyLoadContext.LoadFromPath(codeGeneratorAssemblyPath));
+                    }
+                    return assemblyList;
+                }
+                else
+                {
+                    return list.Select(lib => _assemblyLoadContext.LoadFromName(new AssemblyName(lib.Name)));
+                }              
             }
         }
 

@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.Language;
@@ -21,20 +22,22 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Templating
 
         public RazorTemplating(ICompilationService compilationService)
         {
-            if (compilationService == null)
-            {
-                throw new ArgumentNullException(nameof(compilationService));
-            }
-
-            _compilationService = compilationService;
+            _compilationService = compilationService ?? throw new ArgumentNullException(nameof(compilationService));
         }
 
         public async Task<TemplateResult> RunTemplateAsync(string content,
             dynamic templateModel)
         {
+            var assemblyPath = Assembly.GetEntryAssembly().Location;
+            var dotnetToolsPath = string.Empty;
+            if (!string.IsNullOrEmpty(assemblyPath))
+            {
+                dotnetToolsPath = Path.GetFullPath(Path.GetDirectoryName(assemblyPath));
+            }
+            dotnetToolsPath = Directory.GetCurrentDirectory();
             // Don't care about the RazorProject as we already have the content of the .cshtml file 
             // and don't need to deal with imports.
-            var fileSystem = RazorProjectFileSystem.Create(Directory.GetCurrentDirectory());
+            var fileSystem = RazorProjectFileSystem.Create(dotnetToolsPath);
             var projectEngine = RazorProjectEngine.Create(RazorConfiguration.Default, fileSystem, (builder) =>
             {
                 builder.SetCSharpLanguageVersion(LanguageVersion.CSharp10);
@@ -47,14 +50,17 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Templating
                 });
 
                 builder.AddDefaultImports(@"
-@using System
-@using System.Threading.Tasks
-");
+                    @using System
+                    @using System.Threading.Tasks
+                    ");
             });
 
             var templateItem = new TemplateRazorProjectItem(content);
             var codeDocument = projectEngine.Process(templateItem);
             var generatorResults = codeDocument.GetCSharpDocument();
+            var docString = generatorResults.ToString();
+            var docString2 = codeDocument.Source.ToString();
+            var items = codeDocument.Items;
 
             if (generatorResults.Diagnostics.Any())
             {
@@ -65,6 +71,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Templating
                     ProcessingException = new TemplateProcessingException(messages, generatorResults.GeneratedCode)
                 };
             }
+
             var templateResult = _compilationService.Compile(generatorResults.GeneratedCode);
             if (templateResult.Messages.Any())
             {

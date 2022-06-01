@@ -22,6 +22,13 @@ namespace Microsoft.DotNet.Scaffolding.Shared
         private const string DependencyProperty = "dependencies";
         private const string TypeProperty = "type";
 
+        private static readonly string[] ExcludedAssemblies =
+        {
+            "dotnet-aspnet-codegenerator-design.dll",
+            "dotnet-aspnet-codegenerator-design.exe",
+            "dotnet-scaffold.dll"
+        };
+
         internal static IEnumerable<DependencyDescription> GetPackageDependencies(string projectAssetsFile, string tfm, string tfmMoniker)
         {
             IList<DependencyDescription> packageDependencies = new List<DependencyDescription>();
@@ -83,6 +90,26 @@ namespace Microsoft.DotNet.Scaffolding.Shared
                     {
                         var resolvedPath = file.ToString();
                         var reference = new ResolvedReference(name, resolvedPath);
+                        compilationAssemblies.Add(reference);
+                    }
+                }
+            }
+            return compilationAssemblies;
+        }
+
+        internal static IEnumerable<ResolvedReference> GetScaffoldingToolAssemblies(string assembliesPath)
+        {
+            var compilationAssemblies = new List<ResolvedReference>();
+            if (!string.IsNullOrEmpty(assembliesPath))
+            {
+                var fileList = Directory.GetFiles(assembliesPath);
+                foreach(var file in fileList)
+                {
+                    var resolvedPath = file.ToString();
+                    var fileName = Path.GetFileName(resolvedPath);
+                    if ((resolvedPath.EndsWith(".dll") || resolvedPath.EndsWith(".exe")) && !ExcludedAssemblies.Contains(fileName))
+                    {
+                        var reference = new ResolvedReference(fileName, resolvedPath);
                         compilationAssemblies.Add(reference);
                     }
                 }

@@ -39,6 +39,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
             }
             try
             {
+                //System.Diagnostics.Debugger.Launch();
                 var codeGeneratorName = args[0];
                 _logger.LogMessage("Finding the generator '" + codeGeneratorName + "'...");
                 var generatorDescriptor = _locator.GetCodeGenerator(codeGeneratorName);

@@ -141,7 +141,7 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Razor
             {
                 EFValidationUtil.ValidateEFDependencies(_projectContext.PackageDependencies, razorPageGeneratorModel.UseSqlite);
             }
-            
+            //System.Diagnostics.Debugger.Launch();
             modelTypeAndContextModel = await ModelMetadataUtilities.ValidateModelAndGetEFMetadata(
                 razorPageGeneratorModel,
                 _entityFrameworkService,

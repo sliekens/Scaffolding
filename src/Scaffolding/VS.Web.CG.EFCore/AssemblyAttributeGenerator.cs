@@ -36,7 +36,8 @@ using System.Reflection;";
         /// <returns></returns>
         internal SyntaxTree GenerateAttributeSyntaxTree()
         {
-            if (_originalAssembly.CustomAttributes.Any())
+            var attri = _originalAssembly.CustomAttributes;
+            if (_originalAssembly.CustomAttributes != null && _originalAssembly.CustomAttributes.Any())
             {
                 foreach (var attr in _originalAssembly.CustomAttributes)
                 {

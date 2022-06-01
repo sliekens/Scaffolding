@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="compiler\resources\**\*" />
+    <EmbeddedResource Include="$(RepoRoot)\src\Shared\Microsoft.DotNet.Scaffolding.Shared\compiler\resources\**\*" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Web.CodeGeneration.Templating;
 using Microsoft.VisualStudio.Web.CodeGeneration.Templating.Compilation;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc;
 
 namespace Microsoft.VisualStudio.Web.CodeGeneration.Design
 {
@@ -72,6 +73,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Design
 
         private void AddFrameworkServices(ServiceProvider serviceProvider, IProjectContext projectInformation)
         {
+            //System.Diagnostics.Debugger.Launch();
             var applicationInfo = new ApplicationInfo(
                 projectInformation.ProjectName,
                 Path.GetDirectoryName(projectInformation.ProjectFullPath),

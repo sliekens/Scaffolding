@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
+using System.Reflection;
 
 namespace Microsoft.DotNet.Scaffolding.Shared.ProjectModel
 {
@@ -62,5 +63,45 @@ namespace Microsoft.DotNet.Scaffolding.Shared.ProjectModel
             return newProjectContext;
         }
 
+        public static IProjectContext AddCompilationAssemblies(this IProjectContext projectInformation, string toolAssembliesPath)
+        {
+            
+            var additionalCompilation = ProjectContextHelper.GetScaffoldingToolAssemblies(toolAssembliesPath).ToList();
+            var compilationList = projectInformation.CompilationAssemblies.ToList();
+            compilationList.AddRange(additionalCompilation);
+            foreach (var comp in compilationList)
+            {
+                try
+                {
+                    Assembly.LoadFile(comp.ResolvedPath);
+                }
+                catch (Exception) { }
+
+            }
+            var newProjectContext = new CommonProjectContext()
+            {
+                AssemblyFullPath = projectInformation.AssemblyFullPath,
+                AssemblyName = projectInformation.AssemblyName,
+                CompilationAssemblies = compilationList,
+                CompilationItems = projectInformation.CompilationItems,
+                PackageDependencies = projectInformation.PackageDependencies,
+                Config = projectInformation.Config,
+                Configuration = projectInformation.Configuration,
+                DepsFile = projectInformation.DepsFile,
+                EmbededItems = projectInformation.EmbededItems,
+                IsClassLibrary = projectInformation.IsClassLibrary,
+                Platform = projectInformation.Platform,
+                ProjectFullPath = projectInformation.ProjectFullPath,
+                ProjectName = projectInformation.ProjectName,
+                ProjectReferences = projectInformation.ProjectReferences,
+                RootNamespace = projectInformation.RootNamespace,
+                RuntimeConfig = projectInformation.RuntimeConfig,
+                TargetDirectory = projectInformation.TargetDirectory,
+                TargetFramework = projectInformation.TargetFramework,
+                TargetFrameworkMoniker = projectInformation.TargetFrameworkMoniker,
+                GeneratedImplicitNamespaceImportFile = projectInformation.GeneratedImplicitNamespaceImportFile
+            };
+            return newProjectContext;
+        }
     }
 }
