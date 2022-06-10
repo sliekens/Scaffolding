@@ -142,7 +142,6 @@ namespace Microsoft.DotNet.Tools.Scaffold
                 string projectAssetsFile = ProjectModelHelper.GetProjectAssetsFile(projectInformation);
                 projectInformation = projectInformation.AddPackageDependencies(projectAssetsFile);
                 projectInformation = projectInformation.AddCompilationAssemblies(targetsPath);
-
                 Build(Logger, fileFinder.ProjectFilePath, projectInformation.TargetFramework, projectPath);
                 CodeGenCommandExecutor executor = new CodeGenCommandExecutor(projectInformation,
                     args,

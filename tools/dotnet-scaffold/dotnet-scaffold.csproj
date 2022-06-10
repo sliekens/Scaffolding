@@ -40,7 +40,7 @@
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ControllerGenerator\**" CopyToPublishDirectory="Always" LinkBase="Templates\ControllerGenerator" />
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\MvcLayout\**" CopyToPublishDirectory="Always" LinkBase="Templates\MvcLayout" />
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Startup\**" CopyToPublishDirectory="Always" LinkBase="Templates\Startup" />
-    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.EFCore\Templates\DbContext\*"  CopyToPublishDirectory="Always" LinkBase="Templates\DbContext" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.EFCore\Templates\DbContext\*" CopyToPublishDirectory="Always" LinkBase="Templates\DbContext" />
 
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ViewGenerator\Bootstrap3\**" CopyToPublishDirectory="Always" LinkBase="Templates\ViewGenerator_Versioned\Bootstrap3" />
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ViewGenerator\Bootstrap4\**" CopyToPublishDirectory="Always" LinkBase="Templates\ViewGenerator_Versioned\Bootstrap4" />
@@ -52,7 +52,7 @@
 
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap3\**" CopyToPublishDirectory="Always" LinkBase="Templates\Identity_Versioned\Bootstrap3" />
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap4\**" CopyToPublishDirectory="Always" LinkBase="Templates\Identity_Versioned\Bootstrap4" />
-    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap5\**"  CopyToPublishDirectory="Always" LinkBase="Templates\Identity" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap5\**" CopyToPublishDirectory="Always" LinkBase="Templates\Identity" />
  
   </ItemGroup>
 </Project>
