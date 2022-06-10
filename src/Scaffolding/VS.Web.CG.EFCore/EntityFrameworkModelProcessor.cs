@@ -417,7 +417,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 projectCompilation,
                 c =>
                 {
-                   // c = c.AddSyntaxTrees(assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
+                    c = c.AddSyntaxTrees(assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
                     c = c.AddSyntaxTrees(_dbContextSyntaxTree);
                     if (_programEditResult.Edited)
                     {
@@ -516,7 +516,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 throw new ArgumentNullException(nameof(modelType));
             }
 
-            DbContext dbContextInstance = TryCreateContextUsingAppCode(dbContextType, dbContextType);
+            DbContext dbContextInstance = TryCreateContextUsingAppCode(dbContextType, startupType);
 
             if (dbContextInstance == null)
             {
@@ -557,7 +557,6 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 // EF infers the environment (Development/ Production) based on the environment variable
                 // ASPNETCORE_ENVIRONMENT. This should already be set up by the CodeGeneration.Design process.
                 OperationReportHandler operationHandler = new OperationReportHandler();
-
                 var assembly = startupType.GetTypeInfo().Assembly;
                 return DbContextActivator.CreateInstance(dbContextType, assembly, operationHandler);
             }
@@ -588,17 +587,10 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
             }
         }
 
+        //TODO fix
         private AssemblyAttributeGenerator GetAssemblyAttributeGenerator()
         {
-            Assembly originalAssembly;
-            try
-            {
-                originalAssembly = _loader.LoadFromName(new AssemblyName(Path.GetFileNameWithoutExtension(_projectContext.AssemblyName)));
-            }
-            catch (FileNotFoundException)
-            {
-                originalAssembly = _loader.LoadFromPath(_projectContext.AssemblyFullPath);
-            }
+            Assembly originalAssembly = _loader.LoadFromName(new AssemblyName(Path.GetFileNameWithoutExtension(_projectContext.AssemblyName)));
                 
             return new AssemblyAttributeGenerator(originalAssembly);
         }
