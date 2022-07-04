@@ -23,11 +23,7 @@ using System.Reflection;";
         /// <param name="assembly">The original assembly used to check if it has the User secrets attribute</param>
         public AssemblyAttributeGenerator(Assembly assembly)
         {
-            if (assembly == null)
-            {
-                throw new ArgumentNullException(nameof(assembly));
-            }
-            _originalAssembly = assembly;
+            _originalAssembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
         }
 
         /// <summary>
@@ -36,7 +32,7 @@ using System.Reflection;";
         /// <returns></returns>
         internal SyntaxTree GenerateAttributeSyntaxTree()
         {
-            var attri = _originalAssembly.CustomAttributes;
+            var ass = System.Reflection.Assembly.GetExecutingAssembly();
             if (_originalAssembly.CustomAttributes != null && _originalAssembly.CustomAttributes.Any())
             {
                 foreach (var attr in _originalAssembly.CustomAttributes)

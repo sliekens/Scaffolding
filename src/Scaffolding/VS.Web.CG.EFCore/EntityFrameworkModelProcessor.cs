@@ -1,6 +1,15 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
+using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.DotNet.Scaffolding.Shared.Project;
+using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,19 +17,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.DotNet.Scaffolding.Shared;
-using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
-using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
-using Microsoft.DotNet.Scaffolding.Shared.Project;
-using System.Collections;
-using Microsoft.VisualStudio.Web.CodeGeneration.Utils.DotNet;
+using TypeInfo = System.Reflection.TypeInfo;
 
 namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
 {
@@ -118,6 +116,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                     await EnsureDbContextInLibraryIsValid(dbContextSymbols.First());
                 }
                 //var allTypes = _reflectedTypesProvider.GetAllTypesInProject();
+                //var dbContextType2 = _reflectedTypesProvider.GetAllTypesInProject().FirstOrDefault(r => r.Name.Equals(_dbContextFullTypeName, StringComparison.OrdinalIgnoreCase));
                 var dbContextType = _reflectedTypesProvider.GetReflectedType(
                   modelType: _dbContextFullTypeName,
                   lookInDependencies: true);
@@ -145,7 +144,6 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 }
 
                 _logger.LogMessage(string.Format(MessageStrings.GettingEFMetadata, _modelTypeSymbol.Name));
-
                 ModelMetadata = GetModelMetadata(dbContextType, modelReflectionType, reflectedProgramType);
                 if (_dbContextSyntaxTree != null)
                 {
@@ -370,7 +368,6 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
 
         private async Task GenerateNewDbContextAndRegisterProgramFile(ModelType programType, IApplicationInfo applicationInfo)
         {
-            AssemblyAttributeGenerator assemblyAttributeGenerator = GetAssemblyAttributeGenerator();
             _programEditResult = new EditSyntaxTreeResult()
             {
                 Edited = false
@@ -417,7 +414,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 projectCompilation,
                 c =>
                 {
-                    c = c.AddSyntaxTrees(assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
+                    //c = c.AddSyntaxTrees(_assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
                     c = c.AddSyntaxTrees(_dbContextSyntaxTree);
                     if (_programEditResult.Edited)
                     {
@@ -439,7 +436,6 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
         //if not minimal hosting, edit Startup.cs
         private async Task GenerateNewDbContextAndRegister(ModelType startupType, ModelType programType, IApplicationInfo applicationInfo)
         {
-            AssemblyAttributeGenerator assemblyAttributeGenerator = GetAssemblyAttributeGenerator();
             _startupEditResult = new EditSyntaxTreeResult()
             {
                 Edited = false
@@ -485,7 +481,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 projectCompilation,
                 c =>
                 {
-                    c = c.AddSyntaxTrees(assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
+                    c = c.AddSyntaxTrees(_assemblyAttributeGenerator.GenerateAttributeSyntaxTree());
                     c = c.AddSyntaxTrees(_dbContextSyntaxTree);
                     if (_startupEditResult.Edited)
                     {
@@ -515,8 +511,8 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
             {
                 throw new ArgumentNullException(nameof(modelType));
             }
-
-            DbContext dbContextInstance = TryCreateContextUsingAppCode(dbContextType, startupType);
+            
+            DbContext dbContextInstance = TryCreateContextUsingAppCode(dbContextType, startupType, modelType);
 
             if (dbContextInstance == null)
             {
@@ -549,7 +545,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
             return new ModelMetadata(entityType, dbContextType);
         }
 
-        private DbContext TryCreateContextUsingAppCode(Type dbContextType, Type startupType)
+        private DbContext TryCreateContextUsingAppCode(Type dbContextType, Type startupType, Type modelType)
         {
             try
             {
@@ -558,6 +554,20 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
                 // ASPNETCORE_ENVIRONMENT. This should already be set up by the CodeGeneration.Design process.
                 OperationReportHandler operationHandler = new OperationReportHandler();
                 var assembly = startupType.GetTypeInfo().Assembly;
+                var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(dbContextType);
+                var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
+                /*                var modelTypeEf = (IModel)Activator.CreateInstance(modelType);
+                                optionsBuilder = optionsBuilder.UseModel(modelTypeEf);*/
+
+                //return null;
+                //return Activator.CreateInstance(dbContextType, optionsBuilder.Options);
+                //return (DbContext)Activator.CreateInstance(dbContextType, optionsBuilder.Options);
+                //return activatedType;
+                //var activatedType2 = Activator.CreateInstance(dbContextType, assembly);
+                var cTypes = assembly.GetConstructibleTypes();
+                var tpyes = cTypes.First();
+                //tpyes
+                var context = DbContextActivator.CreateInstance(dbContextType, assembly, operationHandler);
                 return DbContextActivator.CreateInstance(dbContextType, assembly, operationHandler);
             }
             catch (Exception ex)
@@ -587,10 +597,32 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
             }
         }
 
-        //TODO fix
         private AssemblyAttributeGenerator GetAssemblyAttributeGenerator()
         {
-            Assembly originalAssembly = _loader.LoadFromName(new AssemblyName(Path.GetFileNameWithoutExtension(_projectContext.AssemblyName)));
+            var ass = System.Reflection.Assembly.GetExecutingAssembly();
+            Assembly originalAssembly;
+            try
+            {
+                originalAssembly = _loader.LoadFromName(new AssemblyName(Path.GetFileNameWithoutExtension(_projectContext.AssemblyName)));
+            }
+            catch (FileNotFoundException)
+            {
+                var directoryPath = Path.GetDirectoryName(_projectContext.AssemblyFullPath);
+                var fileNames = Directory.GetFiles(directoryPath, "*.dll", SearchOption.AllDirectories);
+                originalAssembly = _loader.LoadFromPath(_projectContext.AssemblyFullPath);
+                foreach (var file in fileNames)
+                {
+                    if (file != _projectContext.AssemblyFullPath)
+                    {
+                        try
+                        {
+                            _loader.LoadFromPath(file);
+                        }
+                        catch (Exception)
+                        { } 
+                    }
+                }
+            }
                 
             return new AssemblyAttributeGenerator(originalAssembly);
         }
@@ -621,5 +653,27 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
 
         //IFileSystem is DefaultFileSystem in commandline scenarios and SimulationModeFileSystem in VS scenarios.
         private bool CalledFromCommandline => !(_fileSystem is SimulationModeFileSystem);
+    }
+
+    public static class AssemblyExtensions
+    {
+        public static IEnumerable<TypeInfo> GetConstructibleTypes(this Assembly assembly)
+       => assembly.GetLoadableDefinedTypes().Where(
+           t => !t.IsAbstract
+               && !t.IsGenericTypeDefinition);
+
+        public static IEnumerable<TypeInfo> GetLoadableDefinedTypes(this Assembly assembly)
+        {
+            try
+            {
+                return assembly.DefinedTypes;
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                List<TypeInfo> types = new List<TypeInfo>();
+                types = ex.Types.Where(t => t is TypeInfo).Cast<TypeInfo>().ToList();
+                return types;
+            }
+        }
     }
 }

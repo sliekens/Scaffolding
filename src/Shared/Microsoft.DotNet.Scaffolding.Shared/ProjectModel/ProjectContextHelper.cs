@@ -21,6 +21,8 @@ namespace Microsoft.DotNet.Scaffolding.Shared
         private const string PackageFoldersProperty = "packageFolders";
         private const string DependencyProperty = "dependencies";
         private const string TypeProperty = "type";
+        private const string CompileProperty = "compile";
+        private const string RuntimeProperty = "runtime";
 
         private static readonly string[] ExcludedAssemblies =
         {
@@ -192,6 +194,19 @@ namespace Microsoft.DotNet.Scaffolding.Shared
                                 }
                             }
                         }
+
+                        if (package.Value.TryGetProperty(CompileProperty, out var compileList))
+                        {
+                            var compileProperty = compileList.EnumerateObject().FirstOrDefault();
+                            dependency.CompilePath = compileProperty.Name;
+                        }
+
+                        if (package.Value.TryGetProperty(RuntimeProperty, out var runtimeList))
+                        {
+                            var runtimeProperty = runtimeList.EnumerateObject().FirstOrDefault();
+                            dependency.RuntimePath = runtimeProperty.Name;
+                        }
+
                         packageDependencies.Add(dependency);
                     }
                 }

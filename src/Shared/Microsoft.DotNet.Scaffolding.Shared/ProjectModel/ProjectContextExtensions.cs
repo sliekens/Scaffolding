@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 using System.Reflection;
+using System.IO;
 
 namespace Microsoft.DotNet.Scaffolding.Shared.ProjectModel
 {
@@ -30,6 +31,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.ProjectModel
                     .Dependencies
                     .Any(dep => dep.Name.Equals(name, StringComparison.OrdinalIgnoreCase)));
         }
+
         public static IProjectContext AddPackageDependencies(this IProjectContext projectInformation, string projectAssetsFile)
         {
             //get project assets file
@@ -60,6 +62,15 @@ namespace Microsoft.DotNet.Scaffolding.Shared.ProjectModel
                 TargetFrameworkMoniker = projectInformation.TargetFrameworkMoniker,
                 GeneratedImplicitNamespaceImportFile = projectInformation.GeneratedImplicitNamespaceImportFile
             };
+            foreach (var comp in packageDependencies)
+            {
+                try
+                {
+                    Assembly.LoadFile(Path.Combine(comp.Path, comp.RuntimePath));
+                }
+                catch (Exception) { }
+
+            }
             return newProjectContext;
         }
 

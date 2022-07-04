@@ -120,8 +120,7 @@ namespace Microsoft.DotNet.Tools.Scaffold
 
         private static int ExecuteCodeGenDesign(string[] args)
         {
-            System.Diagnostics.Debugger.Launch();
-            AssemblyLocator.Init();
+            Debugger.Launch();
             string projectPath = string.Empty;
             if (string.IsNullOrEmpty(projectPath))
             {
@@ -139,6 +138,7 @@ namespace Microsoft.DotNet.Tools.Scaffold
 
                 MsBuildProjectContextBuilder msBuildProjectContextBuilder = new MsBuildProjectContextBuilder(fileFinder.ProjectFilePath, targetsPath);
                 var projectInformation = msBuildProjectContextBuilder.Build();
+                AssemblyLocator.Init();
                 string projectAssetsFile = ProjectModelHelper.GetProjectAssetsFile(projectInformation);
                 projectInformation = projectInformation.AddPackageDependencies(projectAssetsFile);
                 projectInformation = projectInformation.AddCompilationAssemblies(targetsPath);

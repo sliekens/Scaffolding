@@ -91,5 +91,8 @@ namespace Microsoft.DotNet.Scaffolding.Shared.ProjectModel
         {
             _dependencies.Add(dependency);
         }
+
+        public string CompilePath { get; set; }
+        public string RuntimePath { get; set; }
     }
 }

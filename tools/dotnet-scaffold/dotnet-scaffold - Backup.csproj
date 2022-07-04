@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Scaffolding tool for .NET projects. Contains the dotnet-scaffold command used for generating areas, views, controllers, identity pages etc. </Description>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <OutputType>exe</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageTags>dotnet;scaffold</PackageTags>
+    <PackageId>Microsoft.dotnet-scaffold</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbol>true</DebugSymbol>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Commandline" Version="2.0.0-beta1.20574.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepoRoot)\src\Shared\Microsoft.DotNet.Scaffolding.Shared\compiler\resources\**\*" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="$(RepoRoot)src\Scaffolding\VS.Web.CG.Design\VS.Web.CG.Design.csproj" />
+    <ProjectReference Include="$(RepoRoot)src\Shared\Microsoft.DotNet.Scaffolding.Shared\Microsoft.DotNet.Scaffolding.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Msbuild\Target\build\Microsoft.VisualStudio.Web.CodeGeneration.Tools.targets" CopyToPublishDirectory="Always" Link="build\microsoft.visualstudio.web.codegeneration.tools.targets" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Msbuild\Target\buildMultiTargeting\Microsoft.VisualStudio.Web.CodeGeneration.Tools.targets" CopyToPublishDirectory="Always" Link="buildMultiTargeting\microsoft.visualstudio.web.codegeneration.tools.targets" />
+    <None Include="$(ArtifactsBinDir)\VS.Web.CG.Msbuild\$(Configuration)\net6.0\Microsoft.VisualStudio.Web.CodeGeneration.Msbuild.dll" CopyToPublishDirectory="Always" Link="toolassets\net6.0\Microsoft.VisualStudio.Web.CodeGeneration.Msbuild.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\MinimalApi\**" CopyToPublishDirectory="Always" LinkBase="Templates\MinimalApi" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ControllerGenerator\**" CopyToPublishDirectory="Always" LinkBase="Templates\ControllerGenerator" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\MvcLayout\**" CopyToPublishDirectory="Always" LinkBase="Templates\MvcLayout" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Startup\**" CopyToPublishDirectory="Always" LinkBase="Templates\Startup" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.EFCore\Templates\DbContext\*" CopyToPublishDirectory="Always" LinkBase="Templates\DbContext" />
+
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ViewGenerator\Bootstrap3\**" CopyToPublishDirectory="Always" LinkBase="Templates\ViewGenerator_Versioned\Bootstrap3" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ViewGenerator\Bootstrap4\**" CopyToPublishDirectory="Always" LinkBase="Templates\ViewGenerator_Versioned\Bootstrap4" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\ViewGenerator\Bootstrap5\**" CopyToPublishDirectory="Always" LinkBase="Templates\ViewGenerator" />
+   
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\RazorPageGenerator\Bootstrap3\**" CopyToPublishDirectory="Always" LinkBase="Templates\RazorPageGenerator_Versioned\Bootstrap3" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\RazorPageGenerator\Bootstrap4\**" CopyToPublishDirectory="Always" LinkBase="Templates\RazorPageGenerator_Versioned\Bootstrap4" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\RazorPageGenerator\Bootstrap5\**" CopyToPublishDirectory="Always" LinkBase="Templates\RazorPageGenerator" />
+
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap3\**" CopyToPublishDirectory="Always" LinkBase="Templates\Identity_Versioned\Bootstrap3" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap4\**" CopyToPublishDirectory="Always" LinkBase="Templates\Identity_Versioned\Bootstrap4" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Mvc\Templates\Identity\Bootstrap5\**" CopyToPublishDirectory="Always" LinkBase="Templates\Identity" />
+ 
+  </ItemGroup>
+</Project>
