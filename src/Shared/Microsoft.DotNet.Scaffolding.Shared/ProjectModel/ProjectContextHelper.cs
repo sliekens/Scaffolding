@@ -31,6 +31,13 @@ namespace Microsoft.DotNet.Scaffolding.Shared
             "dotnet-scaffold.dll"
         };
 
+        private static readonly string[] ExcludedAssemblies =
+        {
+            "dotnet-aspnet-codegenerator-design.dll",
+            "dotnet-aspnet-codegenerator-design.exe",
+            "dotnet-scaffold.dll"
+        };
+
         internal static IEnumerable<DependencyDescription> GetPackageDependencies(string projectAssetsFile, string tfm, string tfmMoniker)
         {
             IList<DependencyDescription> packageDependencies = new List<DependencyDescription>();

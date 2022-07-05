@@ -597,6 +597,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore
             }
         }
 
+        //TODO fix
         private AssemblyAttributeGenerator GetAssemblyAttributeGenerator()
         {
             var ass = System.Reflection.Assembly.GetExecutingAssembly();

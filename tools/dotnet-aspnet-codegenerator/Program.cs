@@ -100,6 +100,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
         /// </summary>
         internal int Execute(string[] args, bool isNoBuild)
         {
+            System.Diagnostics.Debugger.Launch();
             var app = new ScaffoldingApp(false);
             bool isShowHelp = false;
             app.OnExecute(() =>
