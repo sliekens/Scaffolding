@@ -1,3 +1,5 @@
+using System;
+
 namespace Microsoft.DotNet.Tools.Scaffold.Area
 {
     public class Program

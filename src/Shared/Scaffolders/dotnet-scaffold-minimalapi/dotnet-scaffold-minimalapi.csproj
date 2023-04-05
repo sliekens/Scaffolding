@@ -5,7 +5,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Microsoft.DotNet.Tools.Scaffold.MinimalApi</RootNamespace>
     <PackageId>Microsoft.dotnet-scaffold-minimalapi</PackageId>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

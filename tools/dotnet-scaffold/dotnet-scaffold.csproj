@@ -10,7 +10,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console"  Version="0.46.0" />
-    <PackageReference Include="Spectre.Console.Cli"  Version="0.46.0" />
+    <PackageReference Include="Spectre.Console" Version="0.46.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-controller\dotnet-scaffold-controller.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-identity\dotnet-scaffold-identity.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-minimalapi\dotnet-scaffold-minimalapi.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-razorpage\dotnet-scaffold-razorpage.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-view\dotnet-scaffold-view.csproj" PrivateAssets="All"/> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- <None Include="$(ArtifactsBinDir)\dotnet-scaffold-area\$(Configuration)\net7.0\*.*"
+          Pack="true"
+          PackagePath="lib\net7.0\scaffolders\area\"/>
+  </ItemGroup> -->
 </Project>
