@@ -12,11 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.46.0" />
-    <PackageReference Include="Spectre.Console.Cli" Version="0.46.0" />
+    <PackageReference Include="Spectre.Console" Version="0.46.1-preview.0.20" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.46.1-preview.0.20" />
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj"/>
   </ItemGroup>
-
     <!--
+  <PropertyGroup Condition="'$(ProjectReference.Identity)' == '$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj'">
+      <OutputPath>bin\AnotherProject\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+
   <ItemGroup>
     <AreaFiles Include="$(ArtifactsBinDir)\dotnet-scaffold-area\$(Configuration)\net7.0\*.*"/>
     <None Include="$(ArtifactsBinDir)\dotnet-scaffold-area\$(Configuration)\net7.0\*.*" Link="toolassets\net7.0\" />

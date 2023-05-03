@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
-using Spectre.Console.Cli;
+using System.IO;
+using System.Threading.Tasks;
+//using Spectre.Console;
 
 namespace Microsoft.DotNet.Tools.Scaffold
 {
@@ -30,16 +32,39 @@ namespace Microsoft.DotNet.Tools.Scaffold
 
         */
 
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
-            var allCommands = LoadCommands();
-            var app = new CommandApp();
-/*            app.Configure(config =>
+            var dotnetScaffoldFolder = InitializeDotnetScaffold();
+            if (!string.IsNullOrEmpty(dotnetScaffoldFolder))
             {
-                config.AddCommand<>("add");
-                config.AddCommand<CommitCommand>("commit");
-                config.AddCommand<RebaseCommand>("rebase");
-            });*/
+                //"Failed to initialize, goodbye"
+                return -1;
+            }
+
+            /*
+            var allCommands = LoadCommands(dotnetScaffoldFolder);
+
+                        var app = new CommandApp();
+
+                        app.Configure(c =>
+                        {
+                            c.AddBranch("scaffold", scaffold =>
+                            {
+                                foreach (var command in allCommands)
+                                {
+                                    //scaffold.AddCommand(command.Key, command.Value);
+                                }
+
+                            });
+                            *//*                foreach (var command in allCommands)
+                                            {
+                                                c.AddCommand<>(command.Key);
+                                            }*//*
+                            c.CaseSensitivity(CaseSensitivity.None);
+                        });
+
+                        await app.RunAsync(args);*/
+
             //default commands are going to be { install, uninstall, command }
             //command will have the default scaffolders { area, controller, minimalapi, identity, razorpage, view }
             //find what if its install or uninstall
@@ -47,9 +72,46 @@ namespace Microsoft.DotNet.Tools.Scaffold
             return 0;
         }
 
-        private static object LoadCommands()
+        private static string InitializeDotnetScaffold()
         {
-            throw new NotImplementedException();
+            //if user folder is not found, return empty, exit out of the dotnet-scaffold tool.
+            var userProfileFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            if (string.IsNullOrEmpty(userProfileFolder))
+            {
+                return string.Empty;
+            }
+
+            //check if these files and folders exist, if not create them
+            var dotnetScaffoldFolder = Path.Combine(userProfileFolder, ".dotnet-scaffold");
+            var packagesJsonFile = Path.Combine(dotnetScaffoldFolder, "packages.json");
+            var packagesFolder = Path.Combine(dotnetScaffoldFolder, "packages");
+
+            Directory.CreateDirectory(dotnetScaffoldFolder);
+
+            if (!File.Exists(packagesJsonFile))
+            {
+                File.Create(packagesJsonFile);
+            }
+
+            Directory.CreateDirectory(packagesFolder);
+
+            //if either creation failed, return empty, exit out of the dotnet-scaffold tool.
+            if (!File.Exists(packagesFolder) || !Directory.Exists(packagesFolder))
+            {
+                return string.Empty;
+            }
+
+            return dotnetScaffoldFolder;
         }
+
+        /*        private static IDictionary<string, Command> LoadCommands(string userScaffoldFolder)
+                {
+                    IDictionary<string, Type> allCommands = new Dictionary<string, Type>();
+                    allCommands.Add("install", typeof(InstallCommand));
+                    //userScaffoldFolder folder should exist, already checked in InitializeDotnetScaffold
+                    var packagesJsonFile = Path.Combine(userScaffoldFolder, "packages.json");
+                    var packagesFolder = Path.Combine(userScaffoldFolder, "packages");
+                    throw new NotImplementedException();
+                }*/
     }
 }
