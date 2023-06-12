@@ -4,18 +4,16 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-//using Spectre.Console;
+using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
+using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Install;
+using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DotNet.Tools.Scaffold
 {
     public class Program
     {
-        private const string SCAFFOLD_COMMAND = "scaffold";
-        private const string AREA_COMMAND = "--area";
-        private const string CONTROLLER_COMMAND = "--controller";
-        private const string IDENTITY_COMMAND = "--identity";
-        private const string RAZORPAGE_COMMAND = "--razorpage";
-        private const string VIEW_COMMAND = "--view";
         /*
         dotnet scaffold [generator] [-p|--project] [-n|--nuget-package-dir] [-c|--configuration] [-tfm|--target-framework] [-b|--build-base-path] [--no-build]
 
@@ -29,89 +27,49 @@ namespace Microsoft.DotNet.Tools.Scaffold
         e.g: dotnet scaffold area <AreaNameToGenerate>
              dotnet scaffold identity
              dotnet scaffold razorpage
-
         */
 
         public static async Task<int> Main(string[] args)
         {
-            var dotnetScaffoldFolder = InitializeDotnetScaffold();
-            if (!string.IsNullOrEmpty(dotnetScaffoldFolder))
+            System.Diagnostics.Debugger.Launch();
+            //var allCommands = LoadCommands(dotnetScaffoldFolder);
+            var registrations = new ServiceCollection();
+            string dotnetScaffoldFolder = GetDotnetScaffoldFolder();
+            var toolsService = new ToolService(dotnetScaffoldFolder);
+            registrations.AddSingleton<IToolService>(toolsService);
+            var allCommands = toolsService.GetAllTools();
+
+            var registrar = new TypeRegistrar(registrations);
+            var app = new CommandApp(registrar);
+
+            app.Configure(config =>
             {
-                //"Failed to initialize, goodbye"
-                return -1;
-            }
+                config.AddCommand<InstallCommand>("install");
+                config.AddCommand<UninstallCommand>("uninstall");
+                // Add all the ExternalCommands to the CommandApp
+                foreach (var command in allCommands)
+                {
+                    config.AddCommand<ExternalCommand>(command.ToolName);
+                }
+            });
 
-            /*
-            var allCommands = LoadCommands(dotnetScaffoldFolder);
+            await app.RunAsync(args);
 
-                        var app = new CommandApp();
-
-                        app.Configure(c =>
-                        {
-                            c.AddBranch("scaffold", scaffold =>
-                            {
-                                foreach (var command in allCommands)
-                                {
-                                    //scaffold.AddCommand(command.Key, command.Value);
-                                }
-
-                            });
-                            *//*                foreach (var command in allCommands)
-                                            {
-                                                c.AddCommand<>(command.Key);
-                                            }*//*
-                            c.CaseSensitivity(CaseSensitivity.None);
-                        });
-
-                        await app.RunAsync(args);*/
-
-            //default commands are going to be { install, uninstall, command }
-            //command will have the default scaffolders { area, controller, minimalapi, identity, razorpage, view }
-            //find what if its install or uninstall
-            //
             return 0;
         }
 
-        private static string InitializeDotnetScaffold()
+        private static string GetDotnetScaffoldFolder()
         {
             //if user folder is not found, return empty, exit out of the dotnet-scaffold tool.
             var userProfileFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             if (string.IsNullOrEmpty(userProfileFolder))
             {
-                return string.Empty;
+                //throw new Exception("User profile folder not found.");
             }
 
             //check if these files and folders exist, if not create them
             var dotnetScaffoldFolder = Path.Combine(userProfileFolder, ".dotnet-scaffold");
-            var packagesJsonFile = Path.Combine(dotnetScaffoldFolder, "packages.json");
-            var packagesFolder = Path.Combine(dotnetScaffoldFolder, "packages");
-
-            Directory.CreateDirectory(dotnetScaffoldFolder);
-
-            if (!File.Exists(packagesJsonFile))
-            {
-                File.Create(packagesJsonFile);
-            }
-
-            Directory.CreateDirectory(packagesFolder);
-
-            //if either creation failed, return empty, exit out of the dotnet-scaffold tool.
-            if (!File.Exists(packagesFolder) || !Directory.Exists(packagesFolder))
-            {
-                return string.Empty;
-            }
-
             return dotnetScaffoldFolder;
         }
-
-        /*        private static IDictionary<string, Command> LoadCommands(string userScaffoldFolder)
-                {
-                    IDictionary<string, Type> allCommands = new Dictionary<string, Type>();
-                    allCommands.Add("install", typeof(InstallCommand));
-                    //userScaffoldFolder folder should exist, already checked in InitializeDotnetScaffold
-                    var packagesJsonFile = Path.Combine(userScaffoldFolder, "packages.json");
-                    var packagesFolder = Path.Combine(userScaffoldFolder, "packages");
-                    throw new NotImplementedException();
-                }*/
     }
 }

@@ -900,13 +900,13 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.6""/>
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.5""/>
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.6"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.6"">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include = ""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.5""/>
-    <PackageReference Include = ""Microsoft.EntityFrameworkCore.Tools"" Version=""7.0.5"">
+    <PackageReference Include = ""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.6"" />
+    <PackageReference Include = ""Microsoft.EntityFrameworkCore.Tools"" Version=""7.0.6"">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

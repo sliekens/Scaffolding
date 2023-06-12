@@ -1,0 +1,7 @@
+{
+  "Author": "github.com/deepchoudhery",
+  "ToolDescription": "all scaffolders TODO add more description",
+  "ToolExeName": "scaffold-commands.exe",
+  "ToolName": "dotnet-commands",
+  "ToolVersion": "1.0.0"
+}

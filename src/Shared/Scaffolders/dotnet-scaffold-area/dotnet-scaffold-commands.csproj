@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>scaffold-commands</AssemblyName>
+    <PackageId>Microsoft.dotnet-scaffold-commands</PackageId>
+    <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <NoWarn>$(NoWarn);CS8002;</NoWarn>
+    <!-- Because this project uses a custom nuspec, this is necessary to ensure the generated shims are in the publish directory. -->
+    <PackagedShimOutputRootDirectory>$(OutDir)</PackagedShimOutputRootDirectory>
+    <RootNamespace>Microsoft.DotNet.Tools.Scaffold.Commands</RootNamespace>
+    <IncludeSource>false</IncludeSource>
+    <NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
+    <RollForward>Major</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\Microsoft.DotNet.Scaffolding.Shared.Spectre\Microsoft.DotNet.Scaffolding.Shared.Spectre.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <NuspecProperty Include="packageType=$(PackageType)" />
+    <NuspecProperty Include="targetFramework=$(TargetFramework)" />
+    <NuspecProperty Include="SettingsFile=$(_ToolsSettingsFilePath)" />
+    <NuspecProperty Include="Output=$(PublishDir)**\*" />
+    <NuspecProperty Include="OutputBinary=$(ArtifactsBinDir)dotnet-scaffold-commands\$(Configuration)\net7.0\scaffold-commands.dll" />
+    <NuspecProperty Include="OutputRuntimeConfig=$(ArtifactsBinDir)dotnet-scaffold-commands\$(Configuration)\net7.0\scaffold-commands.runtimeconfig.json" />
+    <NuspecProperty Include="OutputExe=$(ArtifactsBinDir)dotnet-scaffold-commands\$(Configuration)\net7.0\scaffold-commands.exe" />
+    <NuspecProperty Include="OutputExeSymbol=$(ArtifactsBinDir)dotnet-scaffold-commands\$(Configuration)\net7.0\scaffold-commands.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="template.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+</Project>

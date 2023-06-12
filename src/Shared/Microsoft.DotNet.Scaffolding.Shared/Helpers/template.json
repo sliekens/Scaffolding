@@ -1,0 +1,12 @@
+{
+  "PackageName": "MyPackage",
+  "PackageVersion": "1.0.0",
+  "Author": "The Author",
+  "ToolInfo": {
+    "ToolName": "MyTool",
+    "ToolDescription": "A description of my tool",
+    "ToolExeName": "mytool.exe"
+  },
+  "PackageUri": "",
+  "PackageOutputFolderName": "MyPackageFolder"
+}

@@ -28,17 +28,14 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Areas
         private IServiceProvider _serviceProvider { get; set; }
         private IApplicationInfo _appInfo { get; set; }
         private ILogger _logger { get; set; }
-        private IModelTypesLocator _modelTypesLocator { get; set; }
 
         public AreaGenerator(IApplicationInfo applicationInfo,
             IServiceProvider serviceProvider,
-            IModelTypesLocator modelTypesLocator,
             ILogger logger)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _appInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
-            _modelTypesLocator = modelTypesLocator ?? throw new ArgumentNullException(nameof(modelTypesLocator));
         }
 
         public async Task GenerateCode(AreaGeneratorCommandLine model)

@@ -3,6 +3,8 @@
     <Description>Scaffolding tool for .NET projects. Contains the dotnet-scaffold command used for generating areas, views, controllers, identity pages etc. </Description>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>exe</OutputType>
+    <Nullable>enable</Nullable>
+    <LangVersion>11</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackAsTool>true</PackAsTool>
     <PackageTags>dotnet;scaffold</PackageTags>
@@ -12,42 +14,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.46.1-preview.0.20" />
-    <PackageReference Include="Spectre.Console.Cli" Version="0.46.1-preview.0.20" />
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj"/>
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\Microsoft.DotNet.Scaffolding.Shared.Spectre\Microsoft.DotNet.Scaffolding.Shared.Spectre.csproj" />
   </ItemGroup>
-    <!--
-  <PropertyGroup Condition="'$(ProjectReference.Identity)' == '$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj'">
-      <OutputPath>bin\AnotherProject\$(Configuration)\</OutputPath>
-  </PropertyGroup>
 
-
+  <!-- sadfgsadf 
   <ItemGroup>
-    <AreaFiles Include="$(ArtifactsBinDir)\dotnet-scaffold-area\$(Configuration)\net7.0\*.*"/>
-    <None Include="$(ArtifactsBinDir)\dotnet-scaffold-area\$(Configuration)\net7.0\*.*" Link="toolassets\net7.0\" />
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj"/>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-controller\dotnet-scaffold-controller.csproj" PrivateAssets="All"/>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-identity\dotnet-scaffold-identity.csproj" PrivateAssets="All"/>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-minimalapi\dotnet-scaffold-minimalapi.csproj" PrivateAssets="All"/>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-razorpage\dotnet-scaffold-razorpage.csproj" PrivateAssets="All"/>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-view\dotnet-scaffold-view.csproj" PrivateAssets="All"/>
+    <None Include="your_console_project.csproj" Pack="true" Visible="false" />
   </ItemGroup>
-    <Target Name="BeforePack" AfterTargets="Build">
-        <Copy SourceFiles="@(AreaFiles)"
-              DestinationFiles="$(ArtifactsBinDir)$(OutDirName)\content\area\*" />
-    </Target>
-    <ItemGroup>
-   <None Include=
-          Pack="true"
-          PackagePath="lib\net7.0\scaffolders\area\"/>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-area.csproj" PrivateAssets="All"/>
-  </ItemGroup>
-  <PropertyGroup>
-    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);MyCopyFilesToOutputDirectory</PrepareForRunDependsOn>
-  </PropertyGroup>
-
-  <Target Name="MyCopyFilesToOutputDirectory">
-    <Copy SourceFiles="$(ArtifactsBinDir)\dotnet-scaffold-area\$(Configuration)\net7.0\**" DestinationFolder="$(ArtifactsBinDir)$(OutDirName)\toolassets\content\area\" />
-  </Target>
--->
+  -->
 </Project>
