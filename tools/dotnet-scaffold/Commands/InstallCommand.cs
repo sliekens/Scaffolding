@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Helpers;
@@ -90,7 +91,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
 
         internal ToolInfo? GetToolInfo(string toolContentFolder)
         {
-            string templateJsonPath = Path.Combine(toolContentFolder, "template.json");
+            string? templateJsonPath = Directory.EnumerateFiles(toolContentFolder, "template.json", SearchOption.AllDirectories).FirstOrDefault();
             //File.Exists on empty templateJsonPath will return false
             if (File.Exists(templateJsonPath))
             {
@@ -104,7 +105,8 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
                     }
                 }
                 catch (JsonException)
-                { //failed, write to console
+                {
+                    //failed, write to console
                 }
             }
 

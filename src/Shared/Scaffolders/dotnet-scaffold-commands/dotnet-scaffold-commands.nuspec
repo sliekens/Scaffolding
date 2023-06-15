@@ -11,6 +11,5 @@
     $CommonFileElements$
     <file src="$SettingsFile$" target="tools\$targetFramework$\any" />
     <file src="$Output$" target="tools\$targetFramework$\any" />
-    <file src=""
   </files>
 </package>

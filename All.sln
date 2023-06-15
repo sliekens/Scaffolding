@@ -116,7 +116,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DotNet.Scaffoldin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scaffolders", "Scaffolders", "{F52A7AEB-13F4-467A-AAF1-A6EBE19C60B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-scaffold-commands", "src\Shared\Scaffolders\dotnet-scaffold-area\dotnet-scaffold-commands.csproj", "{9C87121E-152E-4CDD-8D01-A7CE7261F504}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-scaffold-commands", "src\Shared\Scaffolders\dotnet-scaffold-commands\dotnet-scaffold-commands.csproj", "{9C87121E-152E-4CDD-8D01-A7CE7261F504}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DotNet.Scaffolding.Shared.Spectre", "src\Shared\Scaffolders\Microsoft.DotNet.Scaffolding.Shared.Spectre\Microsoft.DotNet.Scaffolding.Shared.Spectre.csproj", "{AFDA0048-BE14-4B81-87EA-BD3C7E41A185}"
 EndProject

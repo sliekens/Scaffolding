@@ -23,14 +23,14 @@ namespace Microsoft.Extensions.Internal
             return Create(DotNetMuxer.MuxerPathOrDefault(), new[] { commandName }.Concat(args));
         }
 
-        internal static Command Create(string commandName, IEnumerable<string> args)
+        internal static Command Create(string commandName, IEnumerable<string> args, bool dispatching = false)
         {
-            return new Command(commandName, args);
+            return new Command(commandName, args, dispatching);
         }
 
         //TODO; fix to have a nullable Command and not resure scaffolding's.  Tracked https://github.com/dotnet/Scaffolding/issues/1549
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        private Command(string commandName, IEnumerable<string> args)
+        private Command(string commandName, IEnumerable<string> args, bool dispatching)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             var psi = new ProcessStartInfo
@@ -38,9 +38,18 @@ namespace Microsoft.Extensions.Internal
                 FileName = commandName,
                 Arguments = ArgumentEscaper.EscapeAndConcatenateArgArrayForProcessStart(args),
                 UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
             };
+
+            if (dispatching)
+            {
+                psi.RedirectStandardOutput = false;
+                psi.RedirectStandardError = false;
+            }
+            else
+            {
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
+            }
 
             _process = new Process
             {
@@ -74,9 +83,7 @@ namespace Microsoft.Extensions.Internal
         public CommandResult Execute()
         {
             ThrowIfRunning();
-            Command._logger.LogMessage(
-                $"Executing external command:\n{this}\n", LogMessageLevel.Trace
-            );
+            _logger.LogMessage($"Executing external command:\n{this}\n", LogMessageLevel.Trace);
             _running = true;
             _process.EnableRaisingEvents = true;
 
@@ -93,6 +100,22 @@ namespace Microsoft.Extensions.Internal
 
             _process.OutputDataReceived -= OnOutputReceived;
             _process.ErrorDataReceived -= OnErrorReceived;
+
+            return new CommandResult(
+                _process.StartInfo,
+                exitCode);
+        }
+
+        public CommandResult ExecuteWithRedirection()
+        {
+            ThrowIfRunning();
+            _logger.LogMessage($"Executing external command:\n{this}\n");
+            _running = true;
+           
+            _process.Start();
+            _process.WaitForExit();
+
+            var exitCode = _process.ExitCode;
 
             return new CommandResult(
                 _process.StartInfo,

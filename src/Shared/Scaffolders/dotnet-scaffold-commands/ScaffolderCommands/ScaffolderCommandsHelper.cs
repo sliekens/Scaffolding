@@ -4,14 +4,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NuGet.Protocol.Plugins;
+using Microsoft.Extensions.Internal;
 using Spectre.Console;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands.ScaffolderCommands
 {
     internal static class ScaffolderCommandsHelper
     {
-        public static void ValidateScaffolderSettings(this ScaffolderSettings settings)
+        internal static void ValidateScaffolderSettings(this ScaffolderSettings settings)
         {
             var projectFiles = GetProjectFiles();
             var formattedCsprojFiles = projectFiles.ToDictionary(x => $"{Path.GetFileName(x)} ({x})", y => y);
@@ -49,7 +49,8 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands.ScaffolderCommands
 
         private static List<string> GetProjectFiles(bool throwOnNoneFound = true)
         {
-            var csprojFiles = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), ".csproj");
+            var currDurr = Directory.GetCurrentDirectory();
+            var csprojFiles = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.csproj", SearchOption.AllDirectories);
             if (!csprojFiles.Any() && throwOnNoneFound)
             {
                 //throw a fit about none found, exit mostly

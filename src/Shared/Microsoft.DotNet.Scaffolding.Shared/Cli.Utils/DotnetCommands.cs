@@ -14,6 +14,34 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
     internal static class DotnetCommands
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commandExePath"></param>
+        /// <param name="args"></param>
+        /// <param name="workingDirectory"></param>
+        public static void InvokeExternalCommand(string commandExePath, List<string> args, string workingDirectory = null)
+        {
+            var errors = new List<string>();
+            var output = new List<string>();
+            var result = Command.Create(
+                commandExePath,
+                args.ToArray(),
+                dispatching: true)
+                .OnErrorLine(e => errors.Add(e))
+                .OnOutputLine(o => output.Add(o))
+                .ExecuteWithRedirection();
+
+            if (result.ExitCode != 0)
+            {
+                //throw a fit
+            }
+            else
+            {
+                //stuff is good
+            }
+        }
+
+        /// <summary>
         /// Use to execute `dotnet new`. Mostly for scaffolders that can be invoked using dotnet new
         /// </summary>
         /// <param name="projectPath">csproj path for the project being scaffolded.</param>

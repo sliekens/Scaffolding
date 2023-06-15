@@ -1,9 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.DotNet.Tools.Scaffold.Commands.ScaffolderCommands;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands
@@ -18,8 +20,28 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
 
         public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
         {
-            ScaffolderCommandsHelper.ValidateScaffolderSettings(settings);
+            Console.WriteLine("SCAFFOLD AREA");
+            Console.WriteLine($"project path - {settings.ProjectPath}");
+            Console.WriteLine($"area name - {settings.Name}");
+
+            settings.ValidateScaffolderSettings();
+            ValidateAreaArgs(settings);
+
             return EnsureFolderLayout(settings);
+        }
+
+        private void ValidateAreaArgs(Settings settings)
+        {
+            bool validAreaName = false;
+            while(!validAreaName)
+            {
+                string areaName = AnsiConsole.Ask<string>("Provide an area name");
+                if (!string.IsNullOrEmpty(areaName))
+                {
+                    validAreaName = true;
+                    settings.Name = areaName;
+                }
+            }
         }
 
         private int EnsureFolderLayout(Settings settings)

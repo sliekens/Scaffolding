@@ -13,13 +13,14 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
         IList<ToolInfo> GetAllTools();
         Task<bool> InstallTool(ToolInfo ToolInfo, string toolContentFolder);
         Task<bool> UninstallTool(string toolName);
+        string DotnetScaffolderFolder { get; init; }
     }
 
     public class ToolService : IToolService
     {
         public ToolService(string dotnetScaffoldFolder)
         {
-            _dotnetScaffolderFolder = dotnetScaffoldFolder;
+            DotnetScaffolderFolder = dotnetScaffoldFolder;
             _packagesInfo = LoadPackagesJson();
         }
 
@@ -76,15 +77,23 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
 
         private void AddPackageFolderContentAsync(ToolInfo ToolInfo, string toolContentFolder)
         {
-            var packagesFolder = Path.Combine(_dotnetScaffolderFolder, "packages");
+            var packagesFolder = Path.Combine(DotnetScaffolderFolder, "packages");
             var currentPackageFolder = Path.Combine(packagesFolder, ToolInfo.ToolName, ToolInfo.ToolVersion);
 
             if (!Directory.Exists(currentPackageFolder))
             {
                 Directory.CreateDirectory(currentPackageFolder);
-                foreach (string file in Directory.EnumerateFiles(toolContentFolder))
+                foreach (string file in Directory.EnumerateFiles(toolContentFolder, "*", SearchOption.AllDirectories))
                 {
-                    File.Copy(file, Path.Combine(currentPackageFolder, Path.GetFileName(file)));
+                    // Create the corresponding directory structure in the destination directory
+                    string relativePath = Path.GetRelativePath(toolContentFolder, file);
+                    string destinationFilePath = Path.Combine(currentPackageFolder, relativePath);
+                    string destinationDirectory = Path.GetDirectoryName(destinationFilePath) ?? string.Empty;
+
+                    Directory.CreateDirectory(destinationDirectory);
+
+                    // Copy the file to the destination directory
+                    File.Copy(file, destinationFilePath);
                 }
             }
             else
@@ -103,7 +112,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
             try
             {
                 string jsonString = JsonSerializer.Serialize(_packagesInfo);
-                var packagesJsonFile = Path.Combine(_dotnetScaffolderFolder, "packages.json");
+                var packagesJsonFile = Path.Combine(DotnetScaffolderFolder, "packages.json");
                 //get the packages folder, should exist but triple check
                 //get the package name, package uri,
                 if (File.Exists(packagesJsonFile))
@@ -135,10 +144,10 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
 
         private IDictionary<string, ToolInfo> LoadPackagesJson()
         {
-            var packagesJsonFile = Path.Combine(_dotnetScaffolderFolder, "packages.json");
-            var packagesFolder = Path.Combine(_dotnetScaffolderFolder, "packages");
+            var packagesJsonFile = Path.Combine(DotnetScaffolderFolder, "packages.json");
+            var packagesFolder = Path.Combine(DotnetScaffolderFolder, "packages");
 
-            Directory.CreateDirectory(_dotnetScaffolderFolder);
+            Directory.CreateDirectory(DotnetScaffolderFolder);
 
             if (!File.Exists(packagesJsonFile))
             {
@@ -168,7 +177,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
             return allPackages;
         }
 
-        private readonly string _dotnetScaffolderFolder;
+        public string DotnetScaffolderFolder { get; init; }
         private readonly IDictionary<string, ToolInfo> _packagesInfo;
     }
 }
