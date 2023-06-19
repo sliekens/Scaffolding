@@ -21,8 +21,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
         {
             Console.WriteLine("SCAFFOLD AREA");
-            Console.WriteLine($"project path - {settings.ProjectPath}");
-            Console.WriteLine($"area name - {settings.Name}");
 
             settings.ValidateScaffolderSettings();
             ValidateAreaArgs(settings);
@@ -35,7 +33,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             bool validAreaName = false;
             while(!validAreaName)
             {
-                string areaName = AnsiConsole.Ask<string>("Provide an area name");
+                string areaName = AnsiConsole.Ask<string>("Provide an area name:");
                 if (!string.IsNullOrEmpty(areaName))
                 {
                     validAreaName = true;

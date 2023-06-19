@@ -13,7 +13,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
     {
         public async static Task<int> Main(string[] args)
         {
-            System.Diagnostics.Debugger.Launch();
             Console.WriteLine("running dotnet-scaffold-commands!!");
             var registrations = new ServiceCollection();
             //registrations.AddSingleton<IToolService>(toolsService);
@@ -45,7 +44,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             {
                 var commandName = AnsiConsole.Prompt(
                    new SelectionPrompt<string>()
-                       .Title("Pick a scaffold command")
+                       .Title("Pick a scaffolder: ")
                        .PageSize(15)
                        .AddChoices(commandNames));
 

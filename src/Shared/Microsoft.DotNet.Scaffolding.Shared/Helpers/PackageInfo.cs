@@ -12,9 +12,5 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Helpers
         public string ToolName { get; set; }
         public string ToolExeName { get; set; }
         public string ToolVersion { get; set; }
-/*        public string GetExePath(string basePath)
-        {
-            return Path.Combine(basePath, ToolName, ToolVersion, ToolExeName);
-        }*/
     }
 }

@@ -7,17 +7,16 @@ using System.IO;
 using Microsoft.Extensions.Internal;
 using NuGet.ProjectModel;
 
-namespace Microsoft.DotNet.MSIdentity.Project
+namespace Microsoft.DotNet.Scaffolding.Shared.Services
 {
-    internal class DependencyGraphService : IDependencyGraphService
+    public static class ProjectHelper
     {
-        private readonly string? _projectFilePath;
-        public DependencyGraphService(string? projectPath = null)
-        {
-            _projectFilePath = projectPath;
-        }
-
-        public DependencyGraphSpec? GenerateDependencyGraph()
+        /// <summary>
+        /// Generates Nuget.ProjectModel's DependencyGraphSpec from a dotnet restore operation.
+        /// Used to check what packages exist in the project. 
+        /// </summary>
+        /// <returns></returns>
+        public static DependencyGraphSpec GenerateDependencyGraph(string projectFilePath)
         {
             var dependencyGraph = new DependencyGraphSpec();
             var tmpJsonPath = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
@@ -29,9 +28,9 @@ namespace Microsoft.DotNet.MSIdentity.Project
                 IList<string> arguments = new List<string>();
 
                 //if project path is present, use it for dotnet user-secrets
-                if (!string.IsNullOrEmpty(_projectFilePath))
+                if (!string.IsNullOrEmpty(projectFilePath))
                 {
-                    arguments.Add(_projectFilePath);
+                    arguments.Add(projectFilePath);
                 }
 
                 arguments.Add("/t:GenerateRestoreGraphFile");

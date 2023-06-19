@@ -18,6 +18,7 @@ using Microsoft.DotNet.MSIdentity.Project;
 using Microsoft.DotNet.MSIdentity.Properties;
 using Microsoft.DotNet.MSIdentity.Shared;
 using Microsoft.DotNet.MSIdentity.Tool;
+using Microsoft.DotNet.Scaffolding.Shared.Services;
 using Microsoft.Graph;
 using ConsoleLogger = Microsoft.DotNet.MSIdentity.Shared.ConsoleLogger;
 using Directory = System.IO.Directory;
@@ -419,8 +420,7 @@ namespace Microsoft.DotNet.MSIdentity
                     ConsoleLogger.LogMessage(Resources.UpdatingProjectPackages);
                     ConsoleLogger.LogMessage("=============================================\n");
 
-                    DependencyGraphService dependencyGraphService = new DependencyGraphService(ProvisioningToolOptions.ProjectFilePath);
-                    var dependencyGraph = dependencyGraphService.GenerateDependencyGraph();
+                    var dependencyGraph = ProjectHelper.GenerateDependencyGraph(ProvisioningToolOptions.ProjectFilePath);
                     if (dependencyGraph != null)
                     {
                         var project = dependencyGraph.Projects.FirstOrDefault();

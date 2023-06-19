@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.DotNet.Scaffolding.Shared.Cli.Utils;
+using Microsoft.DotNet.Scaffolding.Shared.Helpers;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Spectre.Console.Cli;
@@ -33,6 +34,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 return -1;
                 //throw a fit
             }
+
             var exeName = toolInfo.ToolExeName;
             if (!Path.HasExtension(exeName) || Path.GetExtension(exeName).ToLower() != ".exe")
             {
@@ -40,7 +42,8 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             }
 
             var packagesFolder = Path.Combine(_packageInfoService.DotnetScaffolderFolder, "packages");
-            var exePath = Path.Combine(packagesFolder, toolInfo.ToolName, toolInfo.ToolVersion, "tools\\net7.0\\any", exeName);
+
+            var exePath = FileSystemHelper.GetFirstFilePath(packagesFolder, exeName);
             DotnetCommands.InvokeExternalCommand(exePath, new List<string>());
             return 0;
         }

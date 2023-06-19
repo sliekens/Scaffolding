@@ -1,19 +1,23 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Helpers;
 
 namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
 {
     public interface IToolService
     {
-        ToolInfo? GetToolInfo(string toolName);
+        ToolInfo GetToolInfo(string toolName);
         IList<string> GetAllToolNames();
         IList<ToolInfo> GetAllTools();
         Task<bool> InstallTool(ToolInfo ToolInfo, string toolContentFolder);
         Task<bool> UninstallTool(string toolName);
-        string DotnetScaffolderFolder { get; init; }
+        string DotnetScaffolderFolder { get; set; }
     }
 
     public class ToolService : IToolService
@@ -24,7 +28,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
             _packagesInfo = LoadPackagesJson();
         }
 
-        public ToolInfo? GetToolInfo(string toolName)
+        public ToolInfo GetToolInfo(string toolName)
         {
             return _packagesInfo.TryGetValue(toolName, out var ToolInfoVal) ? ToolInfoVal : null;
         }
@@ -177,7 +181,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
             return allPackages;
         }
 
-        public string DotnetScaffolderFolder { get; init; }
+        public string DotnetScaffolderFolder { get; set; }
         private readonly IDictionary<string, ToolInfo> _packagesInfo;
     }
 }

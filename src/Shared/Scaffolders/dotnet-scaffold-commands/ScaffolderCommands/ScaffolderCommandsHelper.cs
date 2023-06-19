@@ -49,7 +49,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands.ScaffolderCommands
 
         private static List<string> GetProjectFiles(bool throwOnNoneFound = true)
         {
-            var currDurr = Directory.GetCurrentDirectory();
             var csprojFiles = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.csproj", SearchOption.AllDirectories);
             if (!csprojFiles.Any() && throwOnNoneFound)
             {
