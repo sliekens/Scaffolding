@@ -5,9 +5,9 @@ using System;
 using System.IO;
 using System.Linq;
 using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.Extensions.ProjectModel;
-using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 using Xunit;
 using Xunit.Abstractions;
 

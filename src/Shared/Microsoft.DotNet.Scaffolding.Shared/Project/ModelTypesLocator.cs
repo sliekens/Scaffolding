@@ -58,7 +58,6 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Project
             }
             //For short type names, we don't give special preference to types in current app,
             //should we do that?
-            var allTypes = GetAllTypes();
             return GetAllTypes()
                 .Where(type => string.Equals(type.Name, typeName, StringComparison.Ordinal));
         }

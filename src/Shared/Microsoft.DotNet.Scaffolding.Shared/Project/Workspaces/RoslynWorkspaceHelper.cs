@@ -5,10 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Build.Evaluation;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 
-namespace Microsoft.VisualStudio.Web.CodeGeneration.Utils
+namespace Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces
 {
     public static class RoslynWorkspaceHelper
     {
@@ -20,7 +19,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Utils
                 foreach (string projectReferenceString in projectReferenceStrings)
                     try
                     {
-                        var currentProject = new Project(Path.GetFullPath(projectReferenceString));
+                        var currentProject = new Build.Evaluation.Project(Path.GetFullPath(projectReferenceString));
                         if (currentProject != null)
                         {
                             projectReferenceInformation.Add(GetProjectInformation(currentProject));
@@ -34,7 +33,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Utils
             return projectReferenceInformation;
         }
 
-        internal static ProjectReferenceInformation GetProjectInformation(Project project)
+        internal static ProjectReferenceInformation GetProjectInformation(Build.Evaluation.Project project)
         {
             var compileItems = project.GetItems("Compile").Select(i => i.EvaluatedInclude);
             var fullPath = project.FullPath;

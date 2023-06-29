@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.DotNet.Scaffolding.Shared.Services;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Spectre.Console;

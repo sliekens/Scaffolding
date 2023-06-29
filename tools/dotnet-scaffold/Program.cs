@@ -7,8 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Helpers;
+using Microsoft.DotNet.Scaffolding.Shared.Services;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Commands.Services;
 using Microsoft.DotNet.Tools.Scaffold.Install;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
@@ -39,7 +41,10 @@ namespace Microsoft.DotNet.Tools.Scaffold
             var registrations = new ServiceCollection();
             string dotnetScaffoldFolder = GetDotnetScaffoldFolderPath();
             var toolsService = new ToolService(dotnetScaffoldFolder);
+            var flowProvider = new FlowProvider();
             registrations.AddSingleton<IToolService>(toolsService);
+            registrations.AddSingleton<IFlowProvider>(flowProvider);
+            var commandRegistry = new List<string>();
             var allCommands = toolsService.GetAllTools();
 
             var registrar = new TypeRegistrar(registrations);
@@ -47,8 +52,14 @@ namespace Microsoft.DotNet.Tools.Scaffold
 
             app.Configure(config =>
             {
-                config.AddCommand<InstallCommand>("install");
-                config.AddCommand<UninstallCommand>("uninstall");
+                config.AddCommand<InstallCommand>("install").IsHidden();
+                config.AddCommand<UninstallCommand>("uninstall").IsHidden();
+                config.AddCommand<AreaCommand>("area");
+                config.AddCommand<ControllerCommand>("controller");
+                config.AddCommand<IdentityCommand>("identity");
+                config.AddCommand<MinimalApiCommand>("minimalapi");
+                config.AddCommand<RazorPageCommand>("razorpage");
+                config.AddCommand<ViewCommand>("view");
                 // Add all the ExternalCommands to the CommandApp
                 foreach (var command in allCommands)
                 {
@@ -66,14 +77,14 @@ namespace Microsoft.DotNet.Tools.Scaffold
         private static string[] ValidateArgs(string[] args, IList<ToolInfo> allCommands)
         {
             List<string> argsList = args.ToList();
+            List<string> defaultCommands = new List<string> { "area", "controller", "identity", "minimalapi", "razorpage", "view" };
             List<string> commandNames = allCommands.Select(x => x.ToolName).ToList();
-            commandNames.Add("install");
-            commandNames.Add("uninstall");
+            commandNames.AddRange(defaultCommands);
             if (argsList.Count == 0)
             {
                 var commandName = AnsiConsole.Prompt(
                    new SelectionPrompt<string>()
-                       .Title("Pick a scaffold command")
+                       .Title("\nPick a scaffold command:")
                        .PageSize(15)
                        .AddChoices(commandNames));
 

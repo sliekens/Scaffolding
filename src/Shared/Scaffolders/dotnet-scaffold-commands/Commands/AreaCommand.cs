@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Microsoft.DotNet.Tools.Scaffold.Commands.ScaffolderCommands;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -20,8 +19,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
 
         public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
         {
-            Console.WriteLine("SCAFFOLD AREA");
-
             settings.ValidateScaffolderSettings();
             ValidateAreaArgs(settings);
 
@@ -31,9 +28,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         private void ValidateAreaArgs(Settings settings)
         {
             bool validAreaName = false;
-            while(!validAreaName)
+            while (!validAreaName)
             {
-                string areaName = AnsiConsole.Ask<string>("Provide an area name:");
+                string areaName = AnsiConsole.Ask<string>("\nProvide an area name:");
                 if (!string.IsNullOrEmpty(areaName))
                 {
                     validAreaName = true;

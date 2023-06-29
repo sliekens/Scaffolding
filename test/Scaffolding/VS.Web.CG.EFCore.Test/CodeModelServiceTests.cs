@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
+using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
 using Microsoft.Extensions.ProjectModel;
 using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;

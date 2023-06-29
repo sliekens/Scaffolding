@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Helpers;
+using Microsoft.DotNet.Scaffolding.Shared.Services;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Spectre.Console;

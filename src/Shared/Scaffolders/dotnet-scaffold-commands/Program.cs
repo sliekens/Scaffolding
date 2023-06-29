@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
+using Microsoft.DotNet.Tools.Scaffold.Commands.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands
 {
@@ -13,13 +15,11 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
     {
         public async static Task<int> Main(string[] args)
         {
-            Console.WriteLine("running dotnet-scaffold-commands!!");
             var registrations = new ServiceCollection();
-            //registrations.AddSingleton<IToolService>(toolsService);
-
+            var flowProvider = new FlowProvider();
+            registrations.AddSingleton<IFlowProvider>(flowProvider);
             var registrar = new TypeRegistrar(registrations);
             var app = new CommandApp(registrar);
-
             app.Configure(config =>
             {
                 config.AddCommand<AreaCommand>("area");

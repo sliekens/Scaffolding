@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
+using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
@@ -79,7 +80,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Design
             serviceProvider.Add<IApplicationInfo>(applicationInfo);
             serviceProvider.Add<ICodeGenAssemblyLoadContext>(new DefaultAssemblyLoadContext());
 
-            serviceProvider.Add<CodeAnalysis.Workspace>(new RoslynWorkspace(projectInformation, projectInformation.Configuration));
+            serviceProvider.Add<CodeAnalysis.Workspace>(new RoslynWorkspace(projectInformation));
         }
 
         private void AddCodeGenerationServices(ServiceProvider serviceProvider)

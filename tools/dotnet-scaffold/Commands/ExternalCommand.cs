@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.DotNet.Scaffolding.Shared.Cli.Utils;
 using Microsoft.DotNet.Scaffolding.Shared.Helpers;
+using Microsoft.DotNet.Scaffolding.Shared.Services;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Spectre.Console.Cli;

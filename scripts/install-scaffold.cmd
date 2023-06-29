@@ -18,5 +18,5 @@ call rd /Q /S microsoft.visualstudio.web.codegeneration.utils
 call rd /Q /S microsoft.visualstudio.web.codegenerators.mvc
 
 call cd  %SRC_DIR%/%NUPKG%
-call dotnet tool install -g Microsoft.dotnet-scaffold --add-source %SRC_DIR%\%NUPKG% --version %VERSION%
+call dotnet tool install -g Microsoft.dotnet-scaffold --add-source %SRC_DIR%\%NUPKG% --version %VERSION% --interactive
 call cd %SRC_DIR%
