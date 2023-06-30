@@ -26,7 +26,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\Microsoft.DotNet.Scaffolding.Shared.Spectre\Microsoft.DotNet.Scaffolding.Shared.Spectre.csproj" />
+    <ProjectReference Include="$(RepoRoot)\src\Shared\Microsoft.DotNet.Scaffolding.Shared\Microsoft.DotNet.Scaffolding.Shared.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepoRoot)\tools\dotnet-aspnet-codegenerator\compiler\resources\**\*" />
+    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Msbuild\Target\build\Microsoft.VisualStudio.Web.CodeGeneration.Tools.targets" CopyToPublishDirectory="Always" Link="build\microsoft.visualstudio.web.codegeneration.tools.targets" />
   </ItemGroup>
   
   <ItemGroup>
@@ -42,6 +47,9 @@
   
   <ItemGroup>
     <PackageReference Include="Spectre.Console.Flow" Version="0.5.89" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.46.0" />
+    <PackageReference Include="Spectre.Console" Version="0.46.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>

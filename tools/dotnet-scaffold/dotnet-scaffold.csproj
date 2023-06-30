@@ -13,13 +13,6 @@
     <NoWarn>$(NoWarn);CS8002;</NoWarn>
   </PropertyGroup>
 
-  <!--ItemGroup>
-    <EmbeddedResource Include="$(RepoRoot)\tools\dotnet-aspnet-codegenerator\compiler\resources\**\*" />
-    <ProjectReference Include="$(RepoRoot)\src\Shared\Scaffolders\dotnet-scaffold-commands\dotnet-scaffold-commands.csproj" />
-    <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Msbuild\Target\build\Microsoft.VisualStudio.Web.CodeGeneration.Tools.targets" CopyToPublishDirectory="Always" Link="build\microsoft.visualstudio.web.codegeneration.tools.targets" />
-  </ItemGroup>
-  -->
-
   <ItemGroup>
     <PackageReference Include="System.Commandline" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
