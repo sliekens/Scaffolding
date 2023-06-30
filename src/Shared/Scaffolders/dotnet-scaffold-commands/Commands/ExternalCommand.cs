@@ -12,9 +12,9 @@ using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
-    internal class ExternalCommand : Command<ExternalCommand.Settings>
+    internal class ExternalCommand : Command<CommandSettings>
     {
         public class Settings : DefaultCommandSettings
         {
@@ -22,14 +22,14 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             public string CommandName { get; set; } = default!;
         }
 
-        public ExternalCommand(IToolService packageInfoService)
+        public ExternalCommand()//IToolService packageInfoService)
         {
-            _packageInfoService = packageInfoService ?? throw new ArgumentNullException(nameof(packageInfoService));
+            //_packageInfoService = packageInfoService ?? throw new ArgumentNullException(nameof(packageInfoService));
         }
 
-        public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] CommandSettings settings)
         {
-            var toolInfo = _packageInfoService.GetToolInfo(context.Name);
+            var toolInfo = new ToolInfo();// _packageInfoService.GetToolInfo(context.Name);
             if (toolInfo is null)
             {
                 return -1;
@@ -41,14 +41,15 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             {
                 exeName += ".exe";
             }
+            /*
+            var packagesFolder = ""; Path.Combine(_packageInfoService.DotnetScaffolderFolder, "packages");
 
-            var packagesFolder = Path.Combine(_packageInfoService.DotnetScaffolderFolder, "packages");
-
-            var exePath = FileSystemHelper.GetFirstFilePath(packagesFolder, exeName);
+            var exePath = ""; FileSystemHelper.GetFirstFilePath(packagesFolder, exeName);
             DotnetCommands.InvokeExternalCommand(exePath, new List<string>());
+            */
             return 0;
         }
 
-        private IToolService _packageInfoService;
+       // private IToolService _packageInfoService;
     }
 }

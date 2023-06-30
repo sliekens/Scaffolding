@@ -9,6 +9,7 @@ using Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Discoveries;
 using Spectre.Console;
 using Spectre.Console.Flow;
 using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
+using Microsoft.DotNet.Tools.Scaffold.Commands.Commands;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Steps
 {

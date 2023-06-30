@@ -13,7 +13,7 @@ using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.ProjectModel;
 using Spectre.Console;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
     internal static class ScaffolderCommandsHelper
     {

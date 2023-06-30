@@ -9,14 +9,14 @@ using Spectre.Console.Flow;
 using Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Steps;
 using Microsoft.DotNet.Tools.Scaffold.Commands.Services;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
-    internal class MinimalApiCommand : BaseCommand<MinimalApiCommand.Settings>
+    internal class MinimalApiCommand : BaseCommand<CommandSettings>
     {
         public MinimalApiCommand(IFlowProvider flowProvider) : base(flowProvider)
         { }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, CommandSettings settings)
         {
             //Debugger.Launch();
             //check for base scaffolder settings aka project path for now
@@ -32,7 +32,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 // Is this an EF scenario aka with a dbcontext? if yes --> new DbContextFlowStep()
             };
 
-            return await RunFlowAsync(flowSteps, settings, settings.IsInteractive);
+            return await RunFlowAsync(flowSteps, settings, true);
             /*            var minimalApiTemplates = T4TemplateHelper.GetAllMinimalEndpointsT4(AppInfo.ApplicationBasePath, ProjectContext);
                         var minimalApiTemplatePath = minimalApiTemplates.First(x => x.Contains(GetTemplateName(model, existingEndpointsFile: false)));
                         var minimalApiT4Generator = T4TemplateHelper.CreateT4Generator(ServiceProvider, minimalApiTemplatePath);
@@ -48,24 +48,20 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                             //await CodeGeneratorHelper.AddFileHelper(FileSystem, endpointsFilePath, sourceStream);
                         }*/
         }
+    }
 
-        public class Settings : ModelScaffolderSettings
-        {
-            [CommandOption("--endpoints")]
-            //[Description("Endpoints class to use. (not file name)")]
-            public string? EndpointsClassName { get; set; }
+    internal class MinimalApiCommandSettings : ModelScaffolderSettings
+    {
+        //[Description("Endpoints class to use. (not file name)")]
+        public string? EndpointsClassName { get; set; }
 
-            [CommandOption("--open")]
-            //[Description("Use this option to enable OpenAPI")]
-            public bool OpenApi { get; set; }
+        //[Description("Use this option to enable OpenAPI")]
+        public bool OpenApi { get; set; }
 
-            [CommandOption("--endpointsNamespace")]
-            //[Description("Specify the name of the namespace to use for the generated controller")]
-            public string? EndpointsNamespace { get; set; }
+        //[Description("Specify the name of the namespace to use for the generated controller")]
+        public string? EndpointsNamespace { get; set; }
 
-            [CommandOption("--noTypedResults")]
-            //[Description("Flag to not use TypedResults for minimal apis.")]
-            public bool NoTypedResults { get; set; }
-        }
+        //[Description("Flag to not use TypedResults for minimal apis.")]
+        public bool NoTypedResults { get; set; }
     }
 }

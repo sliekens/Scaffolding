@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
-    internal class ControllerCommand : AsyncCommand<ControllerCommand.Settings>
+    internal class ControllerCommand : AsyncCommand<CommandSettings>
     {
-        public override Task<int> ExecuteAsync(CommandContext context, Settings settings)
+        public override Task<int> ExecuteAsync(CommandContext context, CommandSettings settings)
         {
             throw new NotImplementedException();
         }

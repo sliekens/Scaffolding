@@ -16,9 +16,9 @@ using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Install
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
-    internal class InstallCommand : AsyncCommand<InstallCommand.Settings>
+    internal class InstallCommand : AsyncCommand<CommandSettings>
     {
         public class Settings : DefaultCommandSettings
         {
@@ -26,27 +26,29 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
             public string Source { get; set; } = default!;
         }
 
-        public InstallCommand(IToolService packageInfoService)
+        public InstallCommand()//IToolService packageInfoService)
         {
-            _packageInfoService = packageInfoService ?? throw new ArgumentNullException(nameof(packageInfoService));
+            //_packageInfoService = packageInfoService ?? throw new ArgumentNullException(nameof(packageInfoService));
         }
 
-        public override async Task<int> ExecuteAsync([NotNull] CommandContext context, [NotNull] Settings settings)
+        public override async Task<int> ExecuteAsync([NotNull] CommandContext context, [NotNull] CommandSettings settings)
         {
-            if (settings.Interactive == null || settings.Interactive is true)
-            {
-                ValidateArgs(settings);
-            }
+            /*          if (settings.Interactive == null || settings.Interactive is true)
+                      {
+                          ValidateArgs(settings);
+                      }
 
-            var toolContentFolder = GetToolFolder(settings.Source);
+                      var toolContentFolder = GetToolFolder(settings.Source);*/
+            string toolContentFolder = "sasdfasd";
             var toolPackageInfo = GetToolInfo(toolContentFolder);
             if (toolPackageInfo == null)
             {
                 return -1;
             }
 
-            bool success = await _packageInfoService.InstallTool(toolPackageInfo, toolContentFolder);
-            
+            await Task.Delay(0);
+            bool success = true;// await _packageInfoService.InstallTool(toolPackageInfo, toolContentFolder);
+
             //create directory and copy all its params
             return success ? 0 : -1;
         }
@@ -117,7 +119,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
         private readonly List<string> _installSources = new List<string>() { FolderPath, NupkgFilePath };
         private static readonly string FolderPath = "Folder path (on disk)";
         private static readonly string NupkgFilePath = "NuGet file path (.nupkg)";
-        private IToolService _packageInfoService;
+        //private IToolService _packageInfoService;
     }
 }
 

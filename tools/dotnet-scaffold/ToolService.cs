@@ -6,9 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.DotNet.Scaffolding.Shared.Helpers;
 
-namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
+namespace Microsoft.DotNet.Tools.Scaffold
 {
     public interface IToolService
     {
@@ -30,7 +29,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
 
         public ToolInfo GetToolInfo(string toolName)
         {
-            return _packagesInfo.TryGetValue(toolName, out var ToolInfoVal) ? ToolInfoVal : null;
+            return _packagesInfo.TryGetValue(toolName, out var ToolInfoVal) ? ToolInfoVal : new ToolInfo();
         }
 
         public async Task<bool> InstallTool(ToolInfo toolInfo, string toolContentFolder)
@@ -82,7 +81,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Spectre.Services
         private void AddPackageFolderContentAsync(ToolInfo ToolInfo, string toolContentFolder)
         {
             var packagesFolder = Path.Combine(DotnetScaffolderFolder, "packages");
-            var currentPackageFolder = Path.Combine(packagesFolder, ToolInfo.ToolName, ToolInfo.ToolVersion);
+            var currentPackageFolder = Path.Combine(packagesFolder, ToolInfo.ToolName, ToolInfo.ToolVersion ?? string.Empty);
 
             if (!Directory.Exists(currentPackageFolder))
             {

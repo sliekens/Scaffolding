@@ -12,7 +12,7 @@ using NuGet.Common;
 using Spectre.Console.Cli;
 using Spectre.Console.Flow;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
     public abstract class BaseCommand<TSettings> : AsyncCommand<TSettings>
         where TSettings : CommandSettings

@@ -8,6 +8,7 @@ using Microsoft.DotNet.Scaffolding.Shared.Extensions;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
+using Microsoft.DotNet.Tools.Scaffold.Commands.Commands;
 using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Discoveries

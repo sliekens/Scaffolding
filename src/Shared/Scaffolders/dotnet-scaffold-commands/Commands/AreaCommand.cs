@@ -7,9 +7,9 @@ using System.IO;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
-    internal class AreaCommand : Command<AreaCommand.Settings>
+    internal class AreaCommand : Command<CommandSettings>
     {
         public class Settings : ScaffolderSettings
         {
@@ -17,15 +17,15 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             public string Name { get; set; } = default!;
         }
 
-        public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] CommandSettings settings)
         {
-            settings.ValidateScaffolderSettings();
+            //settings.ValidateScaffolderSettings();
             ValidateAreaArgs(settings);
 
             return EnsureFolderLayout(settings);
         }
 
-        private void ValidateAreaArgs(Settings settings)
+        private void ValidateAreaArgs(CommandSettings settings)
         {
             bool validAreaName = false;
             while (!validAreaName)
@@ -34,14 +34,14 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 if (!string.IsNullOrEmpty(areaName))
                 {
                     validAreaName = true;
-                    settings.Name = areaName;
+                    //settings.Name = areaName;
                 }
             }
         }
 
-        private int EnsureFolderLayout(Settings settings)
+        private int EnsureFolderLayout(CommandSettings settings)
         {
-            string? applicationBasePath = Path.GetDirectoryName(settings.ProjectPath);
+            string? applicationBasePath = string.Empty;// Path.GetDirectoryName(settings.ProjectPath);
             if (string.IsNullOrWhiteSpace(applicationBasePath) || !Directory.Exists(applicationBasePath))
             {
                 return -1;
@@ -53,7 +53,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 Directory.CreateDirectory(areaBasePath);
             }
 
-            var areaPath = Path.Combine(areaBasePath, settings.Name);
+            var areaPath = string.Empty;// Path.Combine(areaBasePath, settings.Name);
             if (!Directory.Exists(areaPath))
             {
                 Directory.CreateDirectory(areaPath);

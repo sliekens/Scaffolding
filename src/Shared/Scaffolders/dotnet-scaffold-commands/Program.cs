@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
+using Microsoft.DotNet.Tools.Scaffold.Commands.Commands;
 using Microsoft.DotNet.Tools.Scaffold.Commands.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
@@ -24,10 +25,10 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             {
                 config.AddCommand<AreaCommand>("area");
                 config.AddCommand<ControllerCommand>("controller");
-                config.AddCommand<IdentityCommand>("identity");
+                //config.AddCommand<IdentityCommand>("identity");
                 config.AddCommand<MinimalApiCommand>("minimalapi");
-                config.AddCommand<RazorPageCommand>("razorpage");
-                config.AddCommand<ViewCommand>("view");
+                //config.AddCommand<RazorPageCommand>("razorpage");
+                //config.AddCommand<ViewCommand>("view");
             });
 
             args = ValidateArgs(args);

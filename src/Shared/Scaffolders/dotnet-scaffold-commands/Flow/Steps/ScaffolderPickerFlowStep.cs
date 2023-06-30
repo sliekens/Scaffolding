@@ -27,14 +27,12 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Steps
         public ValueTask<FlowStepResult> RunAsync(IFlowContext context, CancellationToken cancellationToken)
         {
             var settings = context.GetValue<ScaffolderSettings>("CommandSettings");
-
-            var scaffolderName = 
-
-            if (string.IsNullOrEmpty(path))
+            var scaffolderName = settings?.ScaffolderName;
+            if (string.IsNullOrEmpty(scaffolderName))
             {
-                path = Environment.CurrentDirectory;
-            }
 
+            }
+            string path = "asfsd";
             var discovery = new ProjectFileDiscovery(path);
 
             var projectPath = discovery.Discover(context, path);
@@ -46,7 +44,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Steps
 
             if (projectPath is not null)
             {
-                SetSourceProjectProperties(context, projectPath);
+                SetScaffolderProperties(context, projectPath);
                 return new ValueTask<FlowStepResult>(FlowStepResult.Success);
             }
 
@@ -57,60 +55,30 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands.Flow.Steps
 
         public ValueTask<FlowStepResult> ValidateUserInputAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            var projectPath = context.GetValue<string>(FlowProperties.SourceProjectPath);
-            if (string.IsNullOrEmpty(projectPath))
+            var scaffolderName = context.GetValue<string>(FlowProperties.ScaffolderName);
+            if (string.IsNullOrEmpty(scaffolderName))
             {
                 var settings = context.GetValue<ScaffolderSettings>("CommandSettings");
-                projectPath = settings?.ProjectPath;
+                scaffolderName = settings?.ScaffolderName;
             }
-
-            if (string.IsNullOrEmpty(projectPath))
+           
+            if (string.IsNullOrEmpty(scaffolderName))
             {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Project path is required"));
+                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder name is required"));
             }
 
-            if (!projectPath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
-            {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure(string.Format("Project path is invalid {0}", projectPath)));
-            }
-
-            if (!Path.IsPathRooted(projectPath))
-            {
-                projectPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, projectPath.Trim(Path.DirectorySeparatorChar)));
-            }
-
-            if (!File.Exists(projectPath))
-            {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure(string.Format("Project path does not exist {0}", projectPath)));
-            }
-
-            SetSourceProjectProperties(context, projectPath);
+            SetScaffolderProperties(context, scaffolderName);
 
             return new ValueTask<FlowStepResult>(FlowStepResult.Success);
         }
 
-        private void SetSourceProjectProperties(IFlowContext context, string projectPath)
+        private void SetScaffolderProperties(IFlowContext context, string scaffolderName)
         {
-            var projectContext = ScaffolderCommandsHelper.BuildProject(projectPath);
-            //var projectWorkspace = new RoslynWorkspace(projectContext);
-
             context.Set(new FlowProperty(
                 FlowProperties.SourceProjectPath,
-                projectPath,
-                "Source Project",
+                scaffolderName,
+                "Scaffolder",
                 isVisible: true));
-
-            context.Set(new FlowProperty(
-                FlowProperties.SourceProjectContext,
-                projectContext,
-                "Source Project Context",
-                isVisible: false));
-
-/*            context.Set(new FlowProperty(
-                FlowProperties.SourceProjectContext,
-                projectWorkspace,
-                "Source Project Workspace",
-                isVisible: false));*/
         }
     }
 }

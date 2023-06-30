@@ -2,20 +2,22 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.DotNet.Scaffolding.Shared.Services;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre;
 using Microsoft.DotNet.Scaffolding.Shared.Spectre.Services;
+using Microsoft.DotNet.Tools.Scaffold.Commands;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Install
+namespace Microsoft.DotNet.Tools.Scaffold.Commands.Commands
 {
-    internal class UninstallCommand : Command<UninstallCommand.Settings>
+    internal class UninstallCommand : Command<CommandSettings>
     {
-        public UninstallCommand(IToolService ToolInfoService)
+        public UninstallCommand()//IToolService ToolInfoService)
         {
-            _toolInfoService = ToolInfoService ?? throw new ArgumentNullException(nameof(ToolInfoService));
+            //_toolInfoService = ToolInfoService ?? throw new ArgumentNullException(nameof(ToolInfoService));
         }
 
         public class Settings : DefaultCommandSettings
@@ -24,12 +26,12 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
             public string ToolName { get; set; } = default!;
         }
 
-        public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+        public override int Execute([NotNull] CommandContext context, [NotNull] CommandSettings settings)
         {
-            if (settings.Interactive == null || settings.Interactive is true)
-            {
-                ValidateArgs(settings);
-            }
+            /*            if (settings.Interactive == null || settings.Interactive is true)
+                        {
+                            ValidateArgs(settings);
+                        }*/
 
             return 0;
         }
@@ -38,7 +40,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
         {
             if (string.IsNullOrEmpty(settings.ToolName))
             {
-                var allToolNames = _toolInfoService.GetAllToolNames();
+                var allToolNames = new List<string>();// _toolInfoService.GetAllToolNames();
                 var toolName = AnsiConsole.Prompt(
                    new SelectionPrompt<string>()
                        .Title(":")
@@ -59,7 +61,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Install
             }
         }
 
-        private readonly IToolService _toolInfoService;
+        //private readonly IToolService _toolInfoService;
     }
 }
 
