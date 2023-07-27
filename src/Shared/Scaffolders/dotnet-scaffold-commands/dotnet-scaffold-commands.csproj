@@ -56,49 +56,10 @@
     <None Update="template.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Templates\MinimalApi\MinimalApiEfGenerator.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>MinimalApiEfGenerator.cs</LastGenOutput>
-    </None>
-    <None Update="Templates\MinimalApi\MinimalApiEfNoClassGenerator.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>MinimalApiEfNoClassGenerator.cs</LastGenOutput>
-    </None>
-    <None Update="Templates\MinimalApi\MinimalApiGenerator.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>MinimalApiGenerator.cs</LastGenOutput>
-    </None>
-    <None Update="Templates\MinimalApi\MinimalApiNoClassGenerator.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>MinimalApiNoClassGenerator.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Templates\MinimalApi\MinimalApiEfGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MinimalApiEfGenerator.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templates\MinimalApi\MinimalApiEfNoClassGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MinimalApiEfNoClassGenerator.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templates\MinimalApi\MinimalApiGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MinimalApiGenerator.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templates\MinimalApi\MinimalApiNoClassGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MinimalApiNoClassGenerator.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   
 </Project>

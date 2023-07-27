@@ -5,10 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Services;
 
 namespace Microsoft.DotNet.Tools.Scaffold
 {
@@ -32,63 +35,51 @@ namespace Microsoft.DotNet.Tools.Scaffold
         public static async Task<int> Main(string[] args)
         {
             Debugger.Launch();
+            //create root command, add all other nested commands 
             var rootCommand = new RootCommand("scaffold");
-            var allCommands = GetAllCommands();
-
-            foreach (var command in allCommands)
+            rootCommand.SetHandler(async (context) =>
             {
-                command.SetHandler(() =>
-                {
-                    HandleAllArgs(args);
-                });
-
-                rootCommand.AddCommand(command);
-            }
-            
-            rootCommand.SetHandler(() =>
-            {
-                HandleAllArgs(args);
+                await HandleDefaultScaffolders(context, rootCommand);
             });
 
+            var allDefaultCommands = SetAllHandlers();
+            foreach (var defaultCommand in allDefaultCommands)
+            {
+                rootCommand.AddCommand(defaultCommand);
+            }
+
+            //var allCommands = rootCommand.Union(rootCommand.Subcommands);
+            /*                ;*/
             return await rootCommand.InvokeAsync(args);
         }
 
-        private static List<Command> GetAllCommands()
+        private static List<Command> SetAllHandlers()
         {
-            string dotnetScaffoldFolder = GetDotnetScaffoldFolderPath();
-            var toolsService = new ToolService(dotnetScaffoldFolder);
-            var allTools = toolsService.GetAllTools();
-            var installedCommands = allTools.Select(x => new Command(x.ToolName, x.ToolDescription)).ToList();
-            installedCommands.AddRange(DefaultCommands.AllDefaultCommands);
-            return installedCommands;
-        }
-
-        private static void HandleAllArgs(string[] args)
-        {
-            Console.WriteLine("ferkking lol");
-            //invoke dotnet-scaffold-spectre
-            //throw new NotImplementedException();
-        }
-         
-/*        private static string[] ValidateArgs(string[] args, IList<ToolInfo> allCommands)
-        {
-            List<string> argsList = args.ToList();
-            List<string> defaultCommands = new List<string> { "area", "controller", "identity", "minimalapi", "razorpage", "view" };
-            List<string> commandNames = allCommands.Select(x => x.ToolName).ToList();
-            commandNames.AddRange(defaultCommands);
-*//*            if (argsList.Count == 0)
+            var allDefaultCommands = DefaultCommands.DefaultCommandsDict.Values.ToList();
+            var allCommandsWithSubcommands = allDefaultCommands.GetAllCommandsAndSubcommands();
+            foreach (var command in allCommandsWithSubcommands)
             {
-                var commandName = AnsiConsole.Prompt(
-                   new SelectionPrompt<string>()
-                       .Title("\nPick a scaffold command:")
-                       .PageSize(15)
-                       .AddChoices(commandNames));
+                command.SetHandler(async (context) =>
+                {
+                    await HandleDefaultScaffolders(context, command);
+                });
+            }
 
-                argsList.Add(commandName);
-            }*//*
+            return allDefaultCommands;
+        }
 
-            return argsList.ToArray();
-        }*/
+        private async static Task<int> HandleDefaultScaffolders(InvocationContext context, Command command)
+        {
+            await Task.Delay(0);
+            if (context.ParseResult.Tokens.Any(x => x.Value.Equals("-h") || x.Value.Equals("--help")))
+            {
+                return 0;
+            }
+
+            var commandExecutor = new CommandExecutor(command, context.ParseResult, GetDotnetScaffoldFolderPath());
+            return await commandExecutor.RunScaffolder();
+        }
+
 
         private static string GetDotnetScaffoldFolderPath()
         {

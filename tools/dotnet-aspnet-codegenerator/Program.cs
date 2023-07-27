@@ -280,10 +280,9 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
                     // This may not always be true if the user's settings override the default in the csproj.
                     // However, currently restoring the project always creates the obj folder irrespective of the user's settings.
 
-                    new TargetInstaller(_logger)
-                        .EnsureTargetImported(
-                            Path.GetFileName(projectFileFinder.ProjectFilePath),
-                            Path.Combine(Path.GetDirectoryName(projectFileFinder.ProjectFilePath), "obj"));
+                    TargetInstaller.EnsureTargetImported(
+                        Path.GetFileName(projectFileFinder.ProjectFilePath),
+                        Path.Combine(Path.GetDirectoryName(projectFileFinder.ProjectFilePath), "obj"));
                 }
 
                 return new MsBuildProjectContextBuilder(projectFileFinder.ProjectFilePath, CodeGenerationTargetsLocation, configuration)

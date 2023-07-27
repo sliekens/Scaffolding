@@ -103,12 +103,13 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi
         {
             get
             {
-                var requiredNamespaces = new SortedSet<string>(StringComparer.Ordinal);
-                // We add ControllerNamespace first to make other entries not added to the set if they match.
-                requiredNamespaces.Add(EndpointsNamespace);
+                var requiredNamespaces = new SortedSet<string>(StringComparer.Ordinal)
+                {
+                    // We add ControllerNamespace first to make other entries not added to the set if they match.
+                    EndpointsNamespace
+                };
 
                 var modelTypeNamespace = ModelType.Namespace;
-
                 if (!string.IsNullOrWhiteSpace(modelTypeNamespace))
                 {
                     requiredNamespaces.Add(modelTypeNamespace);

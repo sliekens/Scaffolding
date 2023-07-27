@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,7 +31,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 //config.AddCommand<ViewCommand>("view");
             });
 
-            args = ValidateArgs(args);
+            //args = ValidateArgs(args);
             await app.RunAsync(args);
             return 0;
         }
@@ -53,6 +53,19 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             }
 
             return argsList.ToArray();
+        }
+    }
+}
+*/
+using System.Threading.Tasks;
+
+namespace Microsoft.DotNet.Tools.Scaffold.Commands
+{
+    public class Program
+    {
+        public static int Main(string[] args)
+        {
+            return -1;
         }
     }
 }

@@ -18,7 +18,7 @@ using Microsoft.DotNet.MSIdentity.Project;
 using Microsoft.DotNet.MSIdentity.Properties;
 using Microsoft.DotNet.MSIdentity.Shared;
 using Microsoft.DotNet.MSIdentity.Tool;
-using Microsoft.DotNet.Scaffolding.Shared.Services;
+using Microsoft.DotNet.Scaffolding.Shared.Helpers;
 using Microsoft.Graph;
 using ConsoleLogger = Microsoft.DotNet.MSIdentity.Shared.ConsoleLogger;
 using Directory = System.IO.Directory;

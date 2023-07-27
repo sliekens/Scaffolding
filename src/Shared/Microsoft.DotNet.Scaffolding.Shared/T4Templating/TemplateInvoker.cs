@@ -11,16 +11,10 @@ namespace Microsoft.DotNet.Scaffolding.Shared.T4Templating
     /// </summary>
     public class TemplateInvoker : ITemplateInvoker
     {
-        private readonly IServiceProvider _serviceProvider;
-
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        public TemplateInvoker(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        }
+        public TemplateInvoker() { }
 
         /// <summary>
         /// Executes a code generator template to generate the code.

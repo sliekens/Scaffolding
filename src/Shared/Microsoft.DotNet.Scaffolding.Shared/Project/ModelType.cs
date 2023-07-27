@@ -16,6 +16,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Project
         public string FullName { get; set; }
 
         public string PluralName => Name?.Pluralize(inputIsKnownToBeSingular: false);
+        public ITypeSymbol BaseType { get; set; }
         // Violating the principle that ModelType should be decoupled from Roslyn's API.
         // I had to do this for editing DbContext scenarios but I need to figure out if there
         // is a better way.
@@ -36,7 +37,8 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Project
                 Namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace
                     ? string.Empty
                     : typeSymbol.ContainingNamespace.ToDisplayString(),
-                TypeSymbol = typeSymbol
+                TypeSymbol = typeSymbol,
+                BaseType = typeSymbol.BaseType
             };
         }
     }

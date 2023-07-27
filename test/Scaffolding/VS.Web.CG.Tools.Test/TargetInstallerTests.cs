@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
@@ -13,9 +13,8 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools.Test
         [Fact]
         public void TestTargetInstallation()
         {
-            var installer = new TargetInstaller(new ConsoleLogger());
             var targetLocation = Path.Combine(Path.GetTempPath(), new Guid().ToString());
-            installer.EnsureTargetImported("test.csproj", targetLocation);
+            TargetInstaller.EnsureTargetImported("test.csproj", targetLocation);
             var expectedFilePath = Path.Combine(targetLocation, "test.csproj.codegeneration.targets");
             Assert.True(File.Exists(expectedFilePath));
         }

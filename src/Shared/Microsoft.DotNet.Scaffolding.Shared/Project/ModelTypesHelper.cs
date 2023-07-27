@@ -34,13 +34,41 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Project
                 .Where(type => string.Equals(type.Name, typeName, StringComparison.Ordinal));
         }
 
-        public static IEnumerable<ModelType> GetAllTypes(this RoslynWorkspace projectWorkspace)
+        internal static IEnumerable<ModelType> GetAllTypes(this RoslynWorkspace projectWorkspace, ExistingClassProperties existingClassProperties = null)
         {
-            return projectWorkspace.CurrentSolution.Projects
+            var allTypes = projectWorkspace.CurrentSolution.Projects
                 .Select(project => project.GetCompilationAsync().Result)
                 .Select(comp => RoslynUtilities.GetDirectTypesInCompilation(comp))
                 .Aggregate((col1, col2) => col1.Concat(col2).ToList())
                 .Select(ts => ModelType.FromITypeSymbol(ts));
+
+            if (existingClassProperties is null)
+            {
+                return allTypes;
+            }
+
+            if (!string.IsNullOrEmpty(existingClassProperties.BaseClass))
+            {
+                int lastDotIndex = existingClassProperties.BaseClass.LastIndexOf('.');
+                string shortTypeName = existingClassProperties.BaseClass.Substring(lastDotIndex + 1);
+                allTypes = allTypes.Where(x =>
+                    x.BaseType.ToDisplayParts().Equals(existingClassProperties.BaseClass) ||
+                    x.BaseType.ToDisplayParts().Equals(shortTypeName));
+            }
+
+            if (existingClassProperties.IsStatic)
+            {
+                allTypes = allTypes.Where(x => x.TypeSymbol.IsStatic);
+            }
+
+            return allTypes;
         }
     }
+
+    internal class ExistingClassProperties
+    {
+        public bool IsStatic { get; set; }
+        public string BaseClass { get; set; }
+    }
+
 }

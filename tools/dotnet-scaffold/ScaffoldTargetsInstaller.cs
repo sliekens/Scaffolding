@@ -3,11 +3,12 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
-namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
+namespace Microsoft.DotNet.Tools.Scaffold
 {
-    public static class TargetInstaller
+    public static class ScaffoldTargetsInstaller
     {
         /// <summary>
         /// Check given the project
@@ -24,7 +25,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
             }
 
             const string ToolsImportTargetsName = "Imports.targets";
-            // Create the directory structure for obj folder if it doesn't exist.
+            // Create the directory structure if it doesn't exist.
             Directory.CreateDirectory(objFolder);
 
             var fileName = $"{projectName}.codegeneration.targets";
@@ -35,18 +36,41 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.Tools
                 return true;
             }
 
-            var toolType = typeof(TargetInstaller);
+            var toolType = typeof(ScaffoldTargetsInstaller);
             var toolAssembly = toolType.GetTypeInfo().Assembly;
             var toolNamespace = toolType.Namespace;
-            var toolImportTargetsResourceName = $"{toolNamespace}.compiler.resources.{ToolsImportTargetsName}";
+            var toolImportTargetsResourceName = "Microsoft.DotNet.Tools.Scaffold.Imports.targets";
+            var toolImportTargetsResourceName1 = $"{toolNamespace}.{ToolsImportTargetsName}";
 
-            using (var stream = toolAssembly.GetManifestResourceStream(toolImportTargetsResourceName))
+            using var stream = toolAssembly.GetManifestResourceStream(toolImportTargetsResourceName);
+            if (stream is not null)
             {
                 var targetBytes = new byte[stream.Length];
                 stream.Read(targetBytes, 0, targetBytes.Length);
                 File.WriteAllBytes(importingTargetFilePath, targetBytes);
+                return true;
             }
-            return true;
+
+            return false;
+        }
+
+        internal static string GetTargetsLocation()
+        {
+            const string build = "build";
+            var assembly = typeof(Program).GetTypeInfo().Assembly;
+            var path = Path.GetDirectoryName(assembly.Location) ?? string.Empty;
+            // Crawl up from assembly location till we find 'build' directory.
+            do
+            {
+                if (Directory.EnumerateDirectories(path, build, SearchOption.TopDirectoryOnly).Any())
+                {
+                    return path;
+                }
+
+                path = Path.GetDirectoryName(path);
+            } while (path != null);
+
+            throw new DirectoryNotFoundException("Targets file not found");
         }
     }
 }
