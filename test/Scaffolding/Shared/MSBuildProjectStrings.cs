@@ -18,37 +18,20 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
 
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
 
     </RestoreSources>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
-    <RuntimeFrameworkVersion Condition=""'$(TargetFramework)'=='netcoreapp3.0'"">3.0.0-preview1-26907-05</RuntimeFrameworkVersion>
-    <!-- aspnet/BuildTools#662 Don't police what version of NetCoreApp we use -->
-    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.ApplicationInsights.AspNetCore"" Version=""2.6.1"" />
-    <PackageReference Include=""Microsoft.AspNetCore"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.UI"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Mvc"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.StaticFiles"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Identity.Stores"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging.Debug"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.NET.Sdk.Razor"" Version=""3.0.0-preview5.19227.1"" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Authentication.Cookies"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""3.0.0-preview5-19227-01"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""3.0.0-preview5-19227-01"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""3.0.0-preview6.19304.10"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""3.0.0-preview5.19227.1"" />
-    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""5.0.0-alpha1-t000"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,82 +49,18 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
 
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
 
     </RestoreSources>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
-    <RuntimeFrameworkVersion Condition=""'$(TargetFramework)'=='netcoreapp3.0'"">3.0.0-preview1-26907-05</RuntimeFrameworkVersion>
-    <!-- aspnet/BuildTools#662 Don't police what version of NetCoreApp we use -->
-    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.ApplicationInsights.AspNetCore"" Version=""2.6.1"" />
-    <PackageReference Include=""Microsoft.AspNetCore"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Mvc"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.StaticFiles"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Identity.Stores"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging.Debug"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.NET.Sdk.Razor"" Version=""3.0.0-preview5.19227.1"" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Authentication.Cookies"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""5.0.0-alpha1-t000"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include=""..\Library1\Library1.csproj"" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include = ""xyz.dll"" />
-  </ItemGroup>
-</Project>
-";
-
-        public const string RootNet45ProjectTxt = @"
-<Project Sdk=""Microsoft.NET.Sdk"">
-  <Import Project=""$(MSBuildThisFileDirectory)\TestCodeGeneration.targets"" Condition=""Exists('$(MSBuildThisFileDirectory)\TestCodeGeneration.targets')"" />
-
-  <PropertyGroup>
-    <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
-
-    </RestoreSources>
-    <RootNamespace>Microsoft.TestProject</RootNamespace>
-    <ProjectName>TestProject</ProjectName>
-    <OutputType>EXE</OutputType>
-    <TargetFrameworks>net6.0</TargetFrameworks>
-    <OutputPath>bin\$(Configuration)</OutputPath>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include=""**\*.cs"" Exclude=""Excluded.cs;$(DefaultItemExcludes)"" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics"" Version="""" />
-    <PackageReference Include=""Microsoft.AspNetCore.Mvc"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Server.IISIntegration"" Version=""3.0.0-preview4-19123-01"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Server.Kestrel"" Version=""3.0.0-preview4-19123-01"" />
-    <PackageReference Include=""Microsoft.AspNetCore.StaticFiles"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Configuration.EnvironmentVariables"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Configuration.Json"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Identity.Stores"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging.Console"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging.Debug"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Options.ConfigurationExtensions"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""5.0.0-alpha1-t000"" />
-    <DotNetCliToolReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Tools"" Version=""5.0.0-alpha1-t000"" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include=""..\Library1\Library1.csproj"" />
   </ItemGroup>
@@ -342,24 +261,18 @@ app.Run();
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
 
     </RestoreSources>
     <RootNamespace>Microsoft.Library</RootNamespace>
     <ProjectName>Library1</ProjectName>
     <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include=""**\*.cs"" Exclude=""Excluded.cs;$(DefaultItemExcludes)"" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include=""System.ComponentModel.Annotations"" Version=""4.4.1"" />
   </ItemGroup>
 
 </Project>
@@ -443,37 +356,24 @@ public class Manufacturer
 
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c1d3855 (update test project strings.)
     </RestoreSources>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
     <NoWarn>NU1605</NoWarn>
-    <RuntimeFrameworkVersion Condition=""'$(TargetFramework)'=='netcoreapp3.0'"">3.0.0-preview1-26907-05</RuntimeFrameworkVersion>
-    <!-- aspnet/BuildTools#662 Don't police what version of NetCoreApp we use -->
-    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.ApplicationInsights.AspNetCore"" Version=""2.6.1"" />
-    <PackageReference Include=""Microsoft.AspNetCore"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Mvc"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.StaticFiles"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Identity.Stores"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging.Debug"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.NET.Sdk.Razor"" Version=""3.0.0-preview5.19227.1"" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Authentication.Cookies"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""3.0.0-preview5-19227-01"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""3.0.0-preview5-19227-01"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""3.0.0-preview6.19304.10"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""3.0.0-preview5.19227.1"" />
-    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""5.0.0-alpha1-t000"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
 
   <ItemGroup>
@@ -626,37 +526,24 @@ namespace DAL
 
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c1d3855 (update test project strings.)
     </RestoreSources>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
     <NoWarn>NU1605</NoWarn>
-    <RuntimeFrameworkVersion Condition=""'$(TargetFramework)'=='netcoreapp3.0'"">3.0.0-preview1-26907-05</RuntimeFrameworkVersion>
-    <!-- aspnet/BuildTools#662 Don't police what version of NetCoreApp we use -->
-    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.ApplicationInsights.AspNetCore"" Version=""2.6.1"" />
-    <PackageReference Include=""Microsoft.AspNetCore"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Mvc"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.StaticFiles"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Identity.Stores"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.Extensions.Logging.Debug"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.NET.Sdk.Razor"" Version=""3.0.0-preview5.19227.1"" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Authentication.Cookies"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""3.0.0-preview5-19227-01"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""3.0.0-preview5-19227-01"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""3.0.0-preview6.19304.10"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""3.0.0-preview5.19227.1"" />
-    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""5.0.0-alpha1-t000"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
 
 </Project>
@@ -848,36 +735,28 @@ namespace Test
 
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c1d3855 (update test project strings.)
     </RestoreSources>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Microsoft.Test</RootNamespace>
     <ProjectName>Test</ProjectName>
     <NoWarn>NU1605</NoWarn>
-    <RuntimeFrameworkVersion Condition=""'$(TargetFramework)'=='netcoreapp3.0'"">3.0.0-preview1-26907-05</RuntimeFrameworkVersion>
-    <!-- aspnet/BuildTools#662 Don't police what version of NetCoreApp we use -->
-    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Mvc"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.AspNetCore.StaticFiles"" Version=""3.0.0-alpha1-10584"" />
-    <PackageReference Include=""Microsoft.Extensions.Identity.Stores"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""3.0.0-preview6.19304.10"" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""3.0.0-preview5.19227.1"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Tools"" Version=""3.0.0-preview6.19304.10"">
+      <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Tools"" Version=""7.0.9"">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""3.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""5.0.0-alpha1-t000"" />
+    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""7.0.0"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=""Controllers\"" />
@@ -900,8 +779,8 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.6""/>
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.5""/>
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8""/>
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9""/>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -927,7 +806,7 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.6"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
 </Project>
 ";
@@ -945,7 +824,7 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.6"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include=""..\Library\Library.csproj"" />
