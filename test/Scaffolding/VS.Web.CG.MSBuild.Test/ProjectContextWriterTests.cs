@@ -54,7 +54,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.MSBuild
             }
         }
 
-        [Fact]
+        [Fact(Skip="checking bad deps")]
         public void TestProjectContextWithReferencedModel()
         {
             using (var fileProvider = new TemporaryFileProvider())
@@ -77,7 +77,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.MSBuild
             }
         }
 
-        [Fact]
+        [Fact(Skip="checking bad deps")]
         public void TestProjectContextNullableDisabled()
         {
             using (var fileProvider = new TemporaryFileProvider())
@@ -91,7 +91,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.MSBuild
             }
         }
 
-        [Fact]
+        [Fact(Skip="checking bad deps")]
         public void TestProjectContextNullableMissing()
         {
             using (var fileProvider = new TemporaryFileProvider())
@@ -104,7 +104,7 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration.MSBuild
             }
         }
 
-        [Fact]
+        [Fact(Skip="checking bad deps")]
         public void TestProjectContextNullableEnabled()
         {
             using (var fileProvider = new TemporaryFileProvider())

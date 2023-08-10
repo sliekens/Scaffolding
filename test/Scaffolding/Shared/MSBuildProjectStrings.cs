@@ -21,17 +21,17 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
 
     </RestoreSources>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,13 +52,13 @@ namespace Microsoft.VisualStudio.Web.CodeGeneration
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
 
     </RestoreSources>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
 
   <ItemGroup>
@@ -267,7 +267,7 @@ app.Run();
     <RootNamespace>Microsoft.Library</RootNamespace>
     <ProjectName>Library1</ProjectName>
     <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
@@ -357,23 +357,19 @@ public class Manufacturer
   <PropertyGroup>
     <RestoreSources>;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
-<<<<<<< HEAD
-
-=======
->>>>>>> 8c1d3855 (update test project strings.)
     </RestoreSources>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
     <NoWarn>NU1605</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
 
   <ItemGroup>
@@ -390,15 +386,13 @@ public class Manufacturer
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <RestoreSources>;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/myget-legacy/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/3.0.100-rc2-014277/nuget/v3/index.json;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
 
     </RestoreSources>
     <RootNamespace>Microsoft.Library</RootNamespace>
     <ProjectName>Library1</ProjectName>
     <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
@@ -487,7 +481,7 @@ namespace WebApplication1
     <RootNamespace>Microsoft.Library</RootNamespace>
     <ProjectName>Library1</ProjectName>
     <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
@@ -532,18 +526,18 @@ namespace DAL
 =======
 >>>>>>> 8c1d3855 (update test project strings.)
     </RestoreSources>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Microsoft.TestProject</RootNamespace>
     <ProjectName>TestProject</ProjectName>
     <NoWarn>NU1605</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
 
 </Project>
@@ -736,28 +730,21 @@ namespace Test
   <PropertyGroup>
     <RestoreSources>;
       https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-public/nuget/v3/index.json;
-<<<<<<< HEAD
-
-=======
->>>>>>> 8c1d3855 (update test project strings.)
     </RestoreSources>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Microsoft.Test</RootNamespace>
     <ProjectName>Test</ProjectName>
     <NoWarn>NU1605</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
-      <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.9"" />
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Tools"" Version=""7.0.9"">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-
-    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""7.0.0"" />
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.AspNetCore.Identity.EntityFrameworkCore"" Version=""8.0.0-preview.7.23375.9"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.Extensions.Configuration.UserSecrets"" Version=""8.0.0-preview.7.23375.6"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
+
   <ItemGroup>
     <Folder Include=""Controllers\"" />
   </ItemGroup>
@@ -779,16 +766,9 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8""/>
-    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""7.0.9""/>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include = ""Microsoft.EntityFrameworkCore.SqlServer"" Version=""7.0.5""/>
-    <PackageReference Include = ""Microsoft.EntityFrameworkCore.Tools"" Version=""7.0.5"">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.Design"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.EntityFrameworkCore.SqlServer"" Version=""8.0.0-preview.7.23375.4"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
 </Project>
 ";
@@ -806,7 +786,7 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
 </Project>
 ";
@@ -824,7 +804,7 @@ namespace Test
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""7.0.8"" />
+    <PackageReference Include=""Microsoft.VisualStudio.Web.CodeGeneration.Design"" Version=""8.0.0-preview.6.23360.4"" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include=""..\Library\Library.csproj"" />
