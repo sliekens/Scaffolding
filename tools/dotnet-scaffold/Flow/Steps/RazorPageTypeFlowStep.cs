@@ -13,14 +13,14 @@ using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 {
-    internal class ApiScaffolderTypeFlowStep : IFlowStep
+    internal class RazorPageTypeFlowStep : IFlowStep
     {
-        public string Id => nameof(ApiScaffolderTypeFlowStep);
-        public string DisplayName => "API Scaffolder Type";
+        public string Id => nameof(RazorPageTypeFlowStep);
+        public string DisplayName => "Razor Page Scaffolder Type";
 
         public ValueTask ResetAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            context.Unset(FlowProperties.ApiScaffolderTemplate);
+            context.Unset(FlowProperties.RazorPageScaffolderTemplate);
             return new ValueTask();
         }
 
@@ -28,25 +28,23 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
         {
             var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
             if (command is null ||
-                (!command.Name.Equals("api", StringComparison.OrdinalIgnoreCase) &&
-                !command.Name.Equals("endpoints", StringComparison.OrdinalIgnoreCase) &&
-                !command.Name.Equals("controller", StringComparison.OrdinalIgnoreCase)))
+                (!command.Name.Equals("razorpages", StringComparison.OrdinalIgnoreCase)))
             {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold api ...' here"));
+                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold razorpages ...' here"));
             }
 
-            var apiDiscovery = new ApiDiscovery(command.Name);
-            var apiCommandTuple = apiDiscovery.Discover(context);
+            var razorPageDiscovery = new RazorPageDiscovery();
+            var razorPageCommandTuple = razorPageDiscovery.Discover(context);
 
-            if (apiDiscovery.State.IsNavigation())
+            if (razorPageDiscovery.State.IsNavigation())
             {
-                return new ValueTask<FlowStepResult>(new FlowStepResult { State = apiDiscovery.State });
+                return new ValueTask<FlowStepResult>(new FlowStepResult { State = razorPageDiscovery.State });
             }
 
-            if (apiCommandTuple is not null && apiCommandTuple.Item1 is not null && !string.IsNullOrEmpty(apiCommandTuple.Item2))
+            if (razorPageCommandTuple is not null && razorPageCommandTuple.Item1 is not null && !string.IsNullOrEmpty(razorPageCommandTuple.Item2))
             {
-                SetApiScaffolderTypeProperties(context, apiCommandTuple.Item1, apiCommandTuple.Item2);
-                var steps = GetSteps(apiCommandTuple.Item2);
+                SetApiScaffolderTypeProperties(context, razorPageCommandTuple.Item1, razorPageCommandTuple.Item2);
+                var steps = GetSteps(razorPageCommandTuple.Item2);
                 return new ValueTask<FlowStepResult>(new FlowStepResult { State = FlowStepState.Success, Steps = steps });
             }
 
@@ -56,14 +54,12 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
         public ValueTask<FlowStepResult> ValidateUserInputAsync(IFlowContext context, CancellationToken cancellationToken)
         {
             var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
-            var templateName = context.GetValue<string>(FlowProperties.ApiScaffolderTemplate);
+            var templateName = context.GetValue<string>(FlowProperties.RazorPageScaffolderTemplate);
 
             if (command is null ||
-                (!command.Name.Equals("api", StringComparison.OrdinalIgnoreCase) &&
-                !command.Name.Equals("endpoints", StringComparison.OrdinalIgnoreCase) &&
-                !command.Name.Equals("controller", StringComparison.OrdinalIgnoreCase)))
+                (!command.Name.Equals("razorpage", StringComparison.OrdinalIgnoreCase)))
             {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold api ...' here"));
+                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold razorpage ...' here"));
             }
 
             if (string.IsNullOrEmpty(templateName))
@@ -80,32 +76,29 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             return new ValueTask<FlowStepResult>(new FlowStepResult { State = FlowStepState.Success, Steps = steps });
         }
 
-        private IEnumerable<IFlowStep>? GetSteps(string? templateName)
+        internal IEnumerable<IFlowStep>? GetSteps(string? templateName)
         {
             IList<IFlowStep>? stepDefinitions = default;
             if (!string.IsNullOrEmpty(templateName))
             {
-                ApiScaffolderSteps.TryGetValue(templateName, out stepDefinitions);
+                RazorPageScaffolderSteps.TryGetValue(templateName, out stepDefinitions);
             }
 
             return stepDefinitions;
         }
 
-        internal Dictionary<string, IList<IFlowStep>>? _apiScaffolderSteps;
-        internal Dictionary<string, IList<IFlowStep>> ApiScaffolderSteps => _apiScaffolderSteps ??=
+        internal Dictionary<string, IList<IFlowStep>>? _razorPageScaffolderSteps;
+        internal Dictionary<string, IList<IFlowStep>> RazorPageScaffolderSteps => _razorPageScaffolderSteps ??=
             new Dictionary<string, IList<IFlowStep>>()
             {
-                { "API Controller - Empty", DefaultCommands.EmptyApiControllerSteps },
-                { "API Cotroller with read/write actions", DefaultCommands.ActionsApiController },
-                { "API with read/write endpoints", DefaultCommands.EndpointsNoEfSteps },
-                { "API with read/write endpoints, using EF", DefaultCommands.EndpointsWithEfSteps }
+                { "Razor Pages - Empty", DefaultCommands.EmptyRazorPageSteps }
             };
 
-        private void SetApiScaffolderTypeProperties(IFlowContext context, Command specificApiCommand, string apiScaffolderTemplate)
+        private void SetApiScaffolderTypeProperties(IFlowContext context, Command specificApiCommand, string razorPageScaffolderTemplate)
         {
             context.Set(new FlowProperty(
-                FlowProperties.ApiScaffolderTemplate,
-                apiScaffolderTemplate,
+                FlowProperties.RazorPageScaffolderTemplate,
+                razorPageScaffolderTemplate,
                 DisplayName,
                 isVisible: true));
 

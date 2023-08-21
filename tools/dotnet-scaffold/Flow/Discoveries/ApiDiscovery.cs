@@ -58,26 +58,26 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
         internal Dictionary<string, Tuple<Command, string>> ApiScaffolders => _apiScaffolders ??=
             new Dictionary<string, Tuple<Command, string>>()
             {
-                { "API Controller - Empty", Tuple.Create(DefaultCommands.ApiControllerCommand, "empty") },
-                { "API Cotroller with read/write actions", Tuple.Create(DefaultCommands.ApiControllerCommand, "actions") },
-                { "API with read/write endpoints", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "no-ef") },
-                { "API with read/write endpoints, using EF", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "with-ef") }
+                { "API Controller - Empty", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Controller - Empty") },
+                { "API Cotroller with read/write actions", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Cotroller with read/write actions") },
+                { "API with read/write endpoints", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "API with read/write endpoints") },
+                { "API with read/write endpoints, using EF", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "API with read/write endpoints, using EF") }
             };
 
         internal Dictionary<string, Tuple<Command, string>>? _apiControllerScaffolders;
         internal Dictionary<string, Tuple<Command, string>> ApiControllerScaffolders => _apiControllerScaffolders ??=
             new Dictionary<string, Tuple<Command, string>>()
             {
-                { "API Controller - Empty", Tuple.Create(DefaultCommands.ApiControllerCommand, "empty") },
-                { "API Cotroller with read/write actions", Tuple.Create(DefaultCommands.ApiControllerCommand, "actions") },
+                { "API Controller - Empty", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Controller - Empty") },
+                { "API Cotroller with read/write actions", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Cotroller with read/write actions") },
             };
 
         internal Dictionary<string, Tuple<Command, string>>? _apiEndpointsScaffolders;
         internal Dictionary<string, Tuple<Command, string>> ApiEndpointsScaffolders => _apiEndpointsScaffolders ??=
             new Dictionary<string, Tuple<Command, string>>()
             {
-                { "API with read/write endpoints", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "no-ef") },
-                { "API with read/write endpoints, using EF", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "with-ef") }
+                { "API with read/write endpoints", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "API with read/write endpoints") },
+                { "API with read/write endpoints, using EF", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "API with read/write endpoints, using EF") }
             };
     }
 }

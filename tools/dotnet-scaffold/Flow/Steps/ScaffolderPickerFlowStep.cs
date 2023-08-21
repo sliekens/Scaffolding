@@ -35,7 +35,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 
         public ValueTask<FlowStepResult> RunAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            var command = context.GetValue<Command>("Command");
+            var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
 
             if (command is null || command.Name.Equals("dotnet-scaffold", StringComparison.OrdinalIgnoreCase))
             {

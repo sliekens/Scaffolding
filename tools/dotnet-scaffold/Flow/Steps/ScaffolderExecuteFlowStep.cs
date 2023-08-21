@@ -25,21 +25,18 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
         public async ValueTask<FlowStepResult> RunAsync(IFlowContext context, CancellationToken cancellationToken)
         {
             var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
-            if (command is null)
+            if (command is null || string.IsNullOrEmpty(command.Name))
             {
-                return FlowStepResult.Failure("Command should not be null");
+                return FlowStepResult.Failure("Command/Command name should not be null");
             }
 
-            if (DefaultCommands.DefaultCommandsDict.ContainsKey(command.Name))
-            {
-                await AnsiConsole.Status().WithSpinner()
-                   .Start($"Running scaffolder '{command.Name}'", async statusContext =>
-                   {
-                       statusContext.Refresh();
-                       IInternalScaffolder internalScaffolder = ScaffolderFactory.CreateInternalScaffolder(command.Name, context);
-                       await internalScaffolder.ExecuteAsync();
-                   });
-            }
+            await AnsiConsole.Status().WithSpinner()
+                .Start($"Running scaffolder '{command.Name}'", async statusContext =>
+                {
+                    statusContext.Refresh();
+                    IInternalScaffolder internalScaffolder = ScaffolderFactory.CreateInternalScaffolder(command.Name, context);
+                    await internalScaffolder.ExecuteAsync();
+                });
 
             return FlowStepResult.Success;
         }

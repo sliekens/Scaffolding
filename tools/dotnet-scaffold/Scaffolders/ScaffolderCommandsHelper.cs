@@ -7,8 +7,6 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.ValueContentAnalysis;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.DotNet.Tools.Scaffold.Flow.Steps;
@@ -27,9 +25,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         internal const string MinimalApiGenerator = "Templates\\MinimalApi\\MinimalApiGenerator.tt";
         internal const string MinimalApiNoClassGenerator = "Templates\\MinimalApi\\MinimalApiNoClassGenerator.tt";
         private static string? _scaffoldToolFolder;
-        public static string ScaffoldToolFolder => _scaffoldToolFolder ?? (_scaffoldToolFolder = GetGlobalFolder());
+        public static string ScaffoldToolFolder => _scaffoldToolFolder ??= GetGlobalFolder();
 
-        internal static IProjectContext BuildProject(string projectPath, string targetsLocation)
+        internal static IProjectContext BuildProject(string projectPath)
         {
             //install target, override file if needed, easier and low cost regardless.
             var projectDir = Path.GetDirectoryName(projectPath);
@@ -44,7 +42,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             IProjectContext projectContext = new CommonProjectContext();
 
             string buildingProjectTitle = $"Building project '{name}'";
-            var otherTargets = ScaffoldTargetsInstaller.GetTargetsLocation();
+            var targetsLocation = ScaffoldTargetsInstaller.GetTargetsLocation();
             AnsiConsole.Status()
                 .WithSpinner()
                 .Start(buildingProjectTitle, statusContext =>
@@ -86,6 +84,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             {
                 "area" => new AreaScaffolder(context),
                 "api" => new ApiScaffolder(context),
+                "endpoints" => new ApiScaffolder(context),
+                "controller" => new ApiScaffolder(context),
+                "razorpages" => new RazorPageScaffolder(context),
                 "install" => new InstallScaffolder(context),
                 "uninstall" => new UninstallScaffolder(context),
                 _ => throw new ArgumentException("Invalid scaffolder name"),
@@ -110,15 +111,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             { "api", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
             { "endpoints", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
             { "controller", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
-            //{ "razorpages", new List<IFlowStep() { new RazorPage} >}
-/*               new List<IFlowStep>()
-               {
-                   new SourceProjectFlowStep(),
-                   new ModelClassPickerFlowStep("Model Class"),
-                   new ExistingOrNewClassFlowStep("Endpoints Class", new ExistingClassProperties { IsRequired = true, IsStatic = true }, DefaultCommandOptions.EndpointsClass),
-                   new ExistingOrNewClassFlowStep("DbContext Class", new ExistingClassProperties { BaseClass = "Microsoft.EntityFrameworkCore.DbContext"}, DefaultCommandOptions.DbContext)
-               }
-            },*/
+            { "razorpages", new List<IFlowStep>() { new RazorPageTypeFlowStep() } },
             {
                 "area",
                 new List<IFlowStep>()
@@ -146,13 +139,21 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new ExistingOrNewClassFlowStep("Endpoints Class", new ExistingClassProperties { IsStatic = true }, DefaultCommandOptions.EndpointsClass),
         };
 
-        public static List<IFlowStep> EmptyApiController = new()
+        public static List<IFlowStep> EmptyApiControllerSteps = new()
         {
+            new SourceProjectFlowStep(noBuild: true),
             new ControllerNameStep(actions: false)
+        };
+
+        public static List<IFlowStep> EmptyRazorPageSteps = new()
+        {
+            new SourceProjectFlowStep(noBuild: true),
+            new RazorPageNameStep()
         };
 
         public static List<IFlowStep> ActionsApiController = new()
         {
+            new SourceProjectFlowStep(noBuild: true),
             new ControllerNameStep(actions: true)
         };
         
@@ -251,6 +252,20 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 return _uninstallCommand;
             }
 
+        }
+
+        private static Command? _resetCommand;
+        public static Command ResetCommand
+        {
+            get
+            {
+                _resetCommand ??= new Command("reset")
+                {
+                    IsHidden = true
+                };
+
+                return _resetCommand;
+            }
         }
 
         private static Command AddOptions(this Command command, List<Option> options)

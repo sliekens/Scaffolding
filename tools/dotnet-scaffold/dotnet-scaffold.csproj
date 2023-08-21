@@ -28,7 +28,7 @@
   <ItemGroup>
     <EmbeddedResource Include="$(RepoRoot)\tools\dotnet-aspnet-codegenerator\compiler\resources\**\*" />
     <None Include="$(RepoRoot)\src\Scaffolding\VS.Web.CG.Msbuild\Target\build\Microsoft.VisualStudio.Web.CodeGeneration.Tools.targets" CopyToPublishDirectory="Always" Link="build\microsoft.visualstudio.web.codegeneration.tools.targets" />
-    <None Include="$(ArtifactsBinDir)\VS.Web.CG.Msbuild\$(Configuration)\net7.0\Microsoft.VisualStudio.Web.CodeGeneration.Msbuild.dll" CopyToPublishDirectory="Always" Link="toolassets\net7.0\Microsoft.VisualStudio.Web.CodeGeneration.Msbuild.dll" />
+    <None Include="$(ArtifactsBinDir)\VS.Web.CG.Msbuild\$(Configuration)\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Msbuild.dll" CopyToPublishDirectory="Always" Link="toolassets\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Msbuild.dll" />
   </ItemGroup>
 
   <ItemGroup>

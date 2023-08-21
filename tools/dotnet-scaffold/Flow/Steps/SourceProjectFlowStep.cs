@@ -109,7 +109,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 
             if (!_noBuild)
             {
-                var projectContext = ScaffolderCommandsHelper.BuildProject(projectPath, @"C:\Users\decho\.dotnet\tools\.store\microsoft.dotnet-scaffold\8.0.0-dev\microsoft.dotnet-scaffold\8.0.0-dev\tools\net7.0\any\");
+                var projectContext = ScaffolderCommandsHelper.BuildProject(projectPath);
                 context.Set(new FlowProperty(
                     FlowProperties.SourceProjectContext,
                     projectContext,

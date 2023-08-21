@@ -14,28 +14,24 @@ using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 {
-    internal class ControllerNameStep : IFlowStep
+    internal class RazorPageNameStep : IFlowStep
     {
-        internal ControllerNameStep(bool actions)
-        {
-            _actionsController = actions;
-        }
+        internal RazorPageNameStep() { }
 
         public string Id => nameof(ControllerNameStep);
 
-        public string DisplayName => "Controller Name";
+        public string DisplayName => "Razor Page Name";
 
         public ValueTask ResetAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            context.Unset(FlowProperties.ControllerName);
-            context.Unset(FlowProperties.ActionsController);
+            context.Unset(FlowProperties.RazorPageName);
             return new ValueTask();
         }
 
         public ValueTask<FlowStepResult> RunAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            var prompt = new TextPrompt<string>("Enter new controller name (or [lightseagreen]<[/] to go back).")
-            .ValidationErrorMessage("Not a valid controller name")
+            var prompt = new TextPrompt<string>("Enter new razor page name (or [lightseagreen]<[/] to go back).")
+            .ValidationErrorMessage("Not a valid razor page name")
             .Validate(x =>
             {
                 if (x.Trim() == FlowNavigation.BackInputToken)
@@ -46,13 +42,13 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
                 return Validate(x);
             });
 
-            var controllerName = AnsiConsole.Prompt(prompt).Trim();
-            if (string.Equals(controllerName, FlowNavigation.BackInputToken, StringComparison.OrdinalIgnoreCase))
+            var razorPageName = AnsiConsole.Prompt(prompt).Trim();
+            if (string.Equals(razorPageName, FlowNavigation.BackInputToken, StringComparison.OrdinalIgnoreCase))
             {
                 return new ValueTask<FlowStepResult>(FlowStepResult.Back);
             }
 
-            SetControllerProperties(context, controllerName);
+            SetRazorPageProperties(context, razorPageName);
             return new ValueTask<FlowStepResult>(FlowStepResult.Success);
         }
 
@@ -65,30 +61,24 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             }
 
             var commandParseResult = context.GetValue<ParseResult>(FlowProperties.ScaffolderCommandParseResult);
-            var controllerName = commandParseResult?.GetValueForOption(DefaultCommandOptions.Name);
+            var razorPageName = commandParseResult?.GetValueForOption(DefaultCommandOptions.Name);
 
-            if (controllerName is null)
+            if (razorPageName is null)
             {
                 return new ValueTask<FlowStepResult>(FlowStepResult.Failure("No name provided"));
             }
 
-            SetControllerProperties(context, controllerName);
+            SetRazorPageProperties(context, razorPageName);
             return new ValueTask<FlowStepResult>(FlowStepResult.Success);
         }
 
-        private void SetControllerProperties(IFlowContext context, string controllerName)
+        private void SetRazorPageProperties(IFlowContext context, string razorPageName)
         {
             context.Set(new FlowProperty(
-                FlowProperties.ControllerName,
-                controllerName,
-                "Controller Name",
+                FlowProperties.RazorPageName,
+                razorPageName,
+                "Razor Page Name",
                 isVisible: true));
-
-            context.Set(new FlowProperty(
-                FlowProperties.ActionsController,
-                _actionsController,
-                "Actions",
-                isVisible: false));
         }
 
         private ValidationResult Validate(string name)
@@ -98,10 +88,8 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
                 return ValidationResult.Error("'--name' cannot contain illegal chars");
             }
 
-            //check area name is invalid
+            //check razor page name is invalid
             return ValidationResult.Success();
         }
-
-        private bool _actionsController;
     }
 }

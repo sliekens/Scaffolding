@@ -47,7 +47,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
         /// <param name="projectPath">csproj path for the project being scaffolded.</param>
         /// <param name="additionalArgs">additional arguments </param>
         /// <param name="consoleLogger">IConsoleLogger for console output</param>
-        public static void ExecuteDotnetNew(string projectPath, IList<string> additionalArgs, ILogger consoleLogger)
+        public static int ExecuteDotnetNew(string projectPath, IList<string> additionalArgs, ILogger consoleLogger)
         {
             //need IList<string> populated with at least the template name.
             if (additionalArgs == null)
@@ -113,8 +113,11 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
                 else
                 {
                     consoleLogger.LogMessage($"{MessageStrings.Success}\n");
+                    return result.ExitCode;
                 }
             }
+
+            return -1;
         }
 
         /// <summary>

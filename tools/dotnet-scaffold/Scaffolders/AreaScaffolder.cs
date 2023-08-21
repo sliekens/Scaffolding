@@ -69,6 +69,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             "Data",
             "Views"
         };
-        private IFlowContext _flowContext;
+
+        private readonly IFlowContext _flowContext;
     }
 }

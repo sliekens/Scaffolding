@@ -14,6 +14,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow
         internal const string SourceProjectContext = nameof(SourceProjectContext);
         internal const string SourceProjectWorkspace = nameof(SourceProjectWorkspace);
         internal const string ApiScaffolderTemplate = nameof(ApiScaffolderTemplate);
+        internal const string RazorPageScaffolderTemplate = nameof(RazorPageScaffolderTemplate);
         internal const string BuildPerformed = nameof(BuildPerformed);
         internal const string ModelClassName = nameof(ModelClassName);
         internal const string ModelClassType = nameof(ModelClassType);
@@ -21,6 +22,8 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow
         internal const string ExistingClassName = nameof(ExistingClassName);
         internal const string AreaName = nameof(AreaName);
         internal const string ControllerName = nameof(ControllerName);
+        internal const string RazorPageName = nameof(RazorPageName);
+        internal const string ActionsController = nameof(ActionsController);
         internal const string EndpointsClassName = nameof(EndpointsClassName);
         //display names
         internal const string ModelClassDisplayName = "Model Class";

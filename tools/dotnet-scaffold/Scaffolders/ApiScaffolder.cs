@@ -15,24 +15,77 @@ using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.DotNet.Scaffolding.Shared.T4Templating;
+using Microsoft.DotNet.Scaffolding.Shared.Cli.Utils;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands
 {
     internal class ApiScaffolder : IInternalScaffolder
     {
         private readonly IFlowContext _flowContext;
+        private readonly StringBuilder _commandLineString;
 
         public ApiScaffolder(IFlowContext flowContext)
         {
             _flowContext = flowContext;
+            _commandLineString = new StringBuilder($"dotnet scaffold api ");
         }
   
         public async Task<int> ExecuteAsync()
         {
             Debugger.Launch();
             await Task.Delay(1);
-            AnsiConsole.WriteLine("Executing Minimal API Scaffolder!\n");
-            StringBuilder fullCommandStringBuilder = new($"dotnet scaffold minimalapi ");
+            var projectPath = _flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
+            _commandLineString.Append($"--project-path {projectPath} ");
+            ExecuteEmptyScaffolders(_flowContext);
+            PrintCommand(_commandLineString.ToString());
+            return 0;
+        }
+
+        internal void PrintCommand(string fullCommand)
+        {
+            //var fullCommand = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
+            var parseResult = _flowContext.GetValue<ParseResult>(Flow.FlowProperties.ScaffolderCommandParseResult);
+            var commandString = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
+            var nonInteractive = parseResult?.Tokens.Any(x => x.Value.Equals("--non-interactive"));
+            if (!nonInteractive.GetValueOrDefault())
+            {
+                AnsiConsole.WriteLine("To execute the command non-interactively, use:");
+                AnsiConsole.WriteLine($"`{fullCommand}`");
+            }
+        }
+
+        internal void ExecuteEmptyScaffolders(IFlowContext flowContext)
+        {
+            var command = flowContext.GetValue<System.CommandLine.Command>(Flow.FlowProperties.ScaffolderCommand);
+            var projectFilePath = flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
+            var projectFolderPath = Path.GetDirectoryName(projectFilePath);
+            var controllerName = flowContext.GetValue<string>(Flow.FlowProperties.ControllerName);
+            var actionsController = flowContext.GetValue<bool>(Flow.FlowProperties.ActionsController);
+            //item name in `dotnet new` for api controller or mvc controller (empty with or without actions)
+            var controllerTypeName = "apicontroller";
+            var actionsParameter = actionsController ? "--actions" : string.Empty;
+            //arguments for `dotnet new page`
+            if (string.IsNullOrEmpty(controllerName) || string.IsNullOrEmpty(projectFolderPath))
+            {
+                //need a fugging name
+                return;
+            }
+
+            var additionalArgs = new List<string>()
+            {
+                controllerTypeName,
+                "--name",
+                controllerName,
+                "--output",
+                projectFolderPath,
+                actionsParameter,
+            };
+
+            DotnetCommands.ExecuteDotnetNew(projectFilePath, additionalArgs, new Scaffolding.Shared.ConsoleLogger());
+        } 
+
+        internal void ExecuteEndpointScaffolders(IFlowContext flowContext, StringBuilder fullCommandStringBuilder)
+        {
             //get workspace
             var roslynWorkspace = _flowContext.GetValue<RoslynWorkspace>(Flow.FlowProperties.SourceProjectWorkspace);
             //get model type
@@ -41,11 +94,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             var endpointsClassName = _flowContext.GetValue<string>($"{Flow.FlowProperties.ExistingClassName}-{Flow.FlowProperties.EndpointsClassDisplayName.Replace(" ", "")}");
             if (roslynWorkspace is null || modelClassType is null || string.IsNullOrEmpty(endpointsClassName))
             {
-                return -1;
+                return;
             }
 
-            var projectPath = _flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
-            fullCommandStringBuilder.Append($"--project-path {projectPath} ");
             fullCommandStringBuilder.Append($"--model {modelClassType.Name} ");
             fullCommandStringBuilder.Append($"--endpoints {endpointsClassName} ");
             fullCommandStringBuilder.Append($"--non-interactive");
@@ -74,43 +125,27 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                             UseTypedResults = !model.NoTypedResults
                         };
             */
-/*            var dictParams = new Dictionary<string, object>()
-            {
-                { "Model" , templateModel }
-            };
+            /*            var dictParams = new Dictionary<string, object>()
+                        {
+                            { "Model" , templateModel }
+                        };
 
-            var result = templateInvoker.InvokeTemplate(minimalApiT4Generator, dictParams);
-            var endpointsFilePath = endpointsModel?.TypeSymbol?.Locations.FirstOrDefault()?.SourceTree?.FilePath ?? ValidateAndGetOutputPath(model);
+                        var result = templateInvoker.InvokeTemplate(minimalApiT4Generator, dictParams);
+                        var endpointsFilePath = endpointsModel?.TypeSymbol?.Locations.FirstOrDefault()?.SourceTree?.FilePath ?? ValidateAndGetOutputPath(model);
 
-            //endpoints file exists, use CodeAnalysis to add required clauses.
-            if (FileSystem.FileExists(endpointsFilePath))
-            {
-                //get method block with the api endpoints.
-                string membersBlockText = await CodeGeneratorActionsService.ExecuteTemplate(GetTemplateName(model, existingEndpointsFile: true), TemplateFolders, templateModel);
-                var className = model.EndpintsClassName;
-                await AddEndpointsMethod(membersBlockText, endpointsFilePath, className, templateModel);
-            }*/
+                        //endpoints file exists, use CodeAnalysis to add required clauses.
+                        if (FileSystem.FileExists(endpointsFilePath))
+                        {
+                            //get method block with the api endpoints.
+                            string membersBlockText = await CodeGeneratorActionsService.ExecuteTemplate(GetTemplateName(model, existingEndpointsFile: true), TemplateFolders, templateModel);
+                            var className = model.EndpintsClassName;
+                            await AddEndpointsMethod(membersBlockText, endpointsFilePath, className, templateModel);
+                        }*/
 
             /*            using (var sourceStream = new MemoryStream(Encoding.UTF8.GetBytes(result)))
                         {
                             await CodeGeneratorHelper.AddFileHelper(FileSystem, endpointsFilePath, sourceStream);
                         }*/
-
-            PrintCommand(fullCommandStringBuilder.ToString());
-            return 0;
-        }
-
-        public void PrintCommand(string fullCommand)
-        {
-            //var fullCommand = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
-            var parseResult = _flowContext.GetValue<ParseResult>(Flow.FlowProperties.ScaffolderCommandParseResult);
-            var commandString = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
-            var nonInteractive = parseResult?.Tokens.Any(x => x.Value.Equals("--non-interactive"));
-            if (!nonInteractive.GetValueOrDefault())
-            {
-                AnsiConsole.WriteLine("To execute the command non-interactively, use:");
-                AnsiConsole.WriteLine($"`{fullCommand}`");
-            }
         }
 
         private List<string> GetT4Templates()

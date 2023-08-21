@@ -27,6 +27,7 @@
     <PackageReference Include="Mono.TextTemplating" Version="2.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
     <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildPackageVersion)" />
+    <PackageReference Include="Humanizer" Version="$(HumanizerPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>

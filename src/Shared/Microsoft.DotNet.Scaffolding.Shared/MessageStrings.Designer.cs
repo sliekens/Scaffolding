@@ -142,7 +142,7 @@ namespace Microsoft.DotNet.Scaffolding.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Executing `dotnet new`....
+        ///   Looks up a localized string similar to Executing &apos;dotnet new&apos;.
         /// </summary>
         internal static string ExecuteDotnetNew {
             get {
