@@ -13,14 +13,14 @@ using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 {
-    internal class RazorPageTypeFlowStep : IFlowStep
+    internal class MvcScaffolderTypeFlowStep : IFlowStep
     {
-        public string Id => nameof(RazorPageTypeFlowStep);
-        public string DisplayName => "Razor Page Scaffolder Type";
+        public string Id => nameof(MvcScaffolderTypeFlowStep);
+        public string DisplayName => "MVC Scaffolder Type";
 
         public ValueTask ResetAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            context.Unset(FlowProperties.RazorPageScaffolderTemplate);
+            context.Unset(FlowProperties.MvcScaffolderTemplate);
             return new ValueTask();
         }
 
@@ -28,23 +28,23 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
         {
             var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
             if (command is null ||
-                (!command.Name.Equals("razorpages", StringComparison.OrdinalIgnoreCase)))
+                (!command.Name.Equals("mvc", StringComparison.OrdinalIgnoreCase)))
             {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold razorpages ...' here"));
+                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold mvc ...' here"));
             }
 
-            var razorPageDiscovery = new RazorPageDiscovery();
-            var razorPageCommandTemplate = razorPageDiscovery.Discover(context);
+            var mvcDiscovery = new MvcDiscovery();
+            var mvcTemplate = mvcDiscovery.Discover(context);
 
-            if (razorPageDiscovery.State.IsNavigation())
+            if (mvcDiscovery.State.IsNavigation())
             {
-                return new ValueTask<FlowStepResult>(new FlowStepResult { State = razorPageDiscovery.State });
+                return new ValueTask<FlowStepResult>(new FlowStepResult { State = mvcDiscovery.State });
             }
 
-            if (!string.IsNullOrEmpty(razorPageCommandTemplate))
+            if (!string.IsNullOrEmpty(mvcTemplate))
             {
-                SetRazorPageScaffolderTypeProperties(context, razorPageCommandTemplate);
-                var steps = GetSteps(razorPageCommandTemplate);
+                SetMvcScaffolderTypeProperties(context, mvcTemplate);
+                var steps = GetSteps(mvcTemplate);
                 return new ValueTask<FlowStepResult>(new FlowStepResult { State = FlowStepState.Success, Steps = steps });
             }
 
@@ -59,7 +59,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             if (command is null ||
                 (!command.Name.Equals("razorpage", StringComparison.OrdinalIgnoreCase)))
             {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold razorpage ...' here"));
+                return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold mvc ...' here"));
             }
 
             if (string.IsNullOrEmpty(templateName))
@@ -81,24 +81,25 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             IList<IFlowStep>? stepDefinitions = default;
             if (!string.IsNullOrEmpty(templateName))
             {
-                RazorPageScaffolderSteps.TryGetValue(templateName, out stepDefinitions);
+                MvcScaffolderSteps.TryGetValue(templateName, out stepDefinitions);
             }
 
             return stepDefinitions;
         }
 
-        internal Dictionary<string, IList<IFlowStep>>? _razorPageScaffolderSteps;
-        internal Dictionary<string, IList<IFlowStep>> RazorPageScaffolderSteps => _razorPageScaffolderSteps ??=
+        internal Dictionary<string, IList<IFlowStep>>? _mvcScaffolderSteps;
+        internal Dictionary<string, IList<IFlowStep>> MvcScaffolderSteps => _mvcScaffolderSteps ??=
             new Dictionary<string, IList<IFlowStep>>()
             {
-                { "Razor Pages - Empty", DefaultCommands.EmptyRazorPageSteps }
+                { "MVC Controller - Empty", DefaultCommands.EmptyControllerSteps },
+                { "MVC Controller with read/write actions", DefaultCommands.ActionsController }
             };
 
-        private void SetRazorPageScaffolderTypeProperties(IFlowContext context, string razorPageScaffolderTemplate)
+        private void SetMvcScaffolderTypeProperties(IFlowContext context, string mvcScaffolderTemplate)
         {
             context.Set(new FlowProperty(
-                FlowProperties.RazorPageScaffolderTemplate,
-                razorPageScaffolderTemplate,
+                FlowProperties.MvcScaffolderTemplate,
+                mvcScaffolderTemplate,
                 DisplayName,
                 isVisible: true));
         }

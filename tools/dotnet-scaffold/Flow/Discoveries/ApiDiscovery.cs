@@ -39,10 +39,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
                 .AddChoices(apiOptions.Keys.ToList(), navigation: context.Navigation);
 
             var result = prompt.Show();
-
+            State = result.State;
             if (!string.IsNullOrEmpty(result.Value))
             {
-                State = result.State;
                 return ApiScaffolders.GetValueOrDefault(result.Value);
             }
 

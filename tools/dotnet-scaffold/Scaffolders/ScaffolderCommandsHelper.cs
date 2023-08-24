@@ -84,8 +84,10 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             {
                 "area" => new AreaScaffolder(context),
                 "api" => new ApiScaffolder(context),
-                "endpoints" => new ApiScaffolder(context),
-                "controller" => new ApiScaffolder(context),
+                "mvc" => new MvcScaffolder(context),
+                "mvc controller" => new MvcScaffolder(context),
+                "api endpoints" => new ApiScaffolder(context),
+                "api controller" => new ApiScaffolder(context),
                 "razorpages" => new RazorPageScaffolder(context),
                 "install" => new InstallScaffolder(context),
                 "uninstall" => new UninstallScaffolder(context),
@@ -109,9 +111,11 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         public static Dictionary<string, IEnumerable<IFlowStep>> DefaultCommandStepsDict = new()
         {
             { "api", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
-            { "endpoints", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
-            { "controller", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
+            { "api endpoints", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
+            { "api controller", new List<IFlowStep>() { new ApiScaffolderTypeFlowStep() }},
             { "razorpages", new List<IFlowStep>() { new RazorPageTypeFlowStep() } },
+            { "mvc", new List<IFlowStep>() { new MvcScaffolderTypeFlowStep() } },
+            { "mvc controller", new List<IFlowStep>() { new MvcScaffolderTypeFlowStep() } },
             {
                 "area",
                 new List<IFlowStep>()
@@ -139,7 +143,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new ExistingOrNewClassFlowStep("Endpoints Class", new ExistingClassProperties { IsStatic = true }, DefaultCommandOptions.EndpointsClass),
         };
 
-        public static List<IFlowStep> EmptyApiControllerSteps = new()
+        public static List<IFlowStep> EmptyControllerSteps = new()
         {
             new SourceProjectFlowStep(noBuild: true),
             new ControllerNameStep(actions: false)
@@ -151,7 +155,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new RazorPageNameStep()
         };
 
-        public static List<IFlowStep> ActionsApiController = new()
+        public static List<IFlowStep> ActionsController = new()
         {
             new SourceProjectFlowStep(noBuild: true),
             new ControllerNameStep(actions: true)

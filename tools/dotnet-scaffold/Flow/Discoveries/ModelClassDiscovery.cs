@@ -28,7 +28,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
                 .AddChoices(modelDisplayNames.Order(), navigation: context.Navigation);
 
             var result = prompt.Show();
-
             State = result.State;
             if (result.Value is not null && modelClasses.TryGetValue(result.Value, out string? modelName))
             {

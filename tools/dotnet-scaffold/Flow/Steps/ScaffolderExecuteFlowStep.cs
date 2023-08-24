@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.CommandLine;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Tools.Scaffold.Commands;
@@ -29,12 +30,18 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             {
                 return FlowStepResult.Failure("Command/Command name should not be null");
             }
+            string fullCommandName = command.Name.Trim();
+            string? parentCommandName = command.Parents?.FirstOrDefault()?.Name?.Trim();
+            if (!string.IsNullOrEmpty(parentCommandName) && !parentCommandName.Equals("dotnet-scaffold"))
+            {
+                fullCommandName = $"{parentCommandName}  {fullCommandName}";
+            }
 
             await AnsiConsole.Status().WithSpinner()
-                .Start($"Running scaffolder '{command.Name}'", async statusContext =>
+                .Start($"Running scaffolder '{fullCommandName}'", async statusContext =>
                 {
                     statusContext.Refresh();
-                    IInternalScaffolder internalScaffolder = ScaffolderFactory.CreateInternalScaffolder(command.Name, context);
+                    IInternalScaffolder internalScaffolder = ScaffolderFactory.CreateInternalScaffolder(fullCommandName, context);
                     await internalScaffolder.ExecuteAsync();
                 });
 

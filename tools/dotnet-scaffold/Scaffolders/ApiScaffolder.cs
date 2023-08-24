@@ -22,12 +22,12 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
     internal class ApiScaffolder : IInternalScaffolder
     {
         private readonly IFlowContext _flowContext;
-        private readonly StringBuilder _commandLineString;
+        private readonly StringBuilder _commandlineString;
 
         public ApiScaffolder(IFlowContext flowContext)
         {
             _flowContext = flowContext;
-            _commandLineString = new StringBuilder($"dotnet scaffold api ");
+            _commandlineString = new StringBuilder($"dotnet scaffold api ");
         }
   
         public async Task<int> ExecuteAsync()
@@ -35,32 +35,35 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             Debugger.Launch();
             await Task.Delay(1);
             var projectPath = _flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
-            _commandLineString.Append($"--project-path {projectPath} ");
-            ExecuteEmptyScaffolders(_flowContext);
-            PrintCommand(_commandLineString.ToString());
+            var apiCommand = _flowContext.GetValue<System.CommandLine.Command>(Flow.FlowProperties.ScaffolderCommand);
+            _commandlineString.Append($"--project-path {projectPath} ");
+
+            if (string.IsNullOrEmpty(projectPath) || apiCommand is null)
+            {
+                return -1;
+            }
+
+            var commandName = apiCommand.Name;
+            switch(commandName)
+            {
+                case "controller":
+                    ExecuteEmptyScaffolders();
+                    break;
+                case "endpoints":
+                    ExecuteEndpointScaffolders();
+                    break;
+            }
+
+            PrintCommand();
             return 0;
         }
 
-        internal void PrintCommand(string fullCommand)
+        internal void ExecuteEmptyScaffolders()
         {
-            //var fullCommand = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
-            var parseResult = _flowContext.GetValue<ParseResult>(Flow.FlowProperties.ScaffolderCommandParseResult);
-            var commandString = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
-            var nonInteractive = parseResult?.Tokens.Any(x => x.Value.Equals("--non-interactive"));
-            if (!nonInteractive.GetValueOrDefault())
-            {
-                AnsiConsole.WriteLine("To execute the command non-interactively, use:");
-                AnsiConsole.WriteLine($"`{fullCommand}`");
-            }
-        }
-
-        internal void ExecuteEmptyScaffolders(IFlowContext flowContext)
-        {
-            var command = flowContext.GetValue<System.CommandLine.Command>(Flow.FlowProperties.ScaffolderCommand);
-            var projectFilePath = flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
+            var projectFilePath = _flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
             var projectFolderPath = Path.GetDirectoryName(projectFilePath);
-            var controllerName = flowContext.GetValue<string>(Flow.FlowProperties.ControllerName);
-            var actionsController = flowContext.GetValue<bool>(Flow.FlowProperties.ActionsController);
+            var controllerName = _flowContext.GetValue<string>(Flow.FlowProperties.ControllerName);
+            var actionsController = _flowContext.GetValue<bool>(Flow.FlowProperties.ActionsController);
             //item name in `dotnet new` for api controller or mvc controller (empty with or without actions)
             var controllerTypeName = "apicontroller";
             var actionsParameter = actionsController ? "--actions" : string.Empty;
@@ -84,7 +87,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             DotnetCommands.ExecuteDotnetNew(projectFilePath, additionalArgs, new Scaffolding.Shared.ConsoleLogger());
         } 
 
-        internal void ExecuteEndpointScaffolders(IFlowContext flowContext, StringBuilder fullCommandStringBuilder)
+        internal void ExecuteEndpointScaffolders()
         {
             //get workspace
             var roslynWorkspace = _flowContext.GetValue<RoslynWorkspace>(Flow.FlowProperties.SourceProjectWorkspace);
@@ -97,9 +100,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 return;
             }
 
-            fullCommandStringBuilder.Append($"--model {modelClassType.Name} ");
-            fullCommandStringBuilder.Append($"--endpoints {endpointsClassName} ");
-            fullCommandStringBuilder.Append($"--non-interactive");
+            _commandlineString.Append($"--model {modelClassType.Name} ");
+            _commandlineString.Append($"--endpoints {endpointsClassName} ");
+            _commandlineString.Append($"--non-interactive");
             //try getting endpoints class type
             var endpointsClassType = _flowContext.GetValue<ModelType>($"{Flow.FlowProperties.ExistingClassType}-{Flow.FlowProperties.EndpointsClassName.Replace(" ", "")}");
             if (endpointsClassType is null)
@@ -146,6 +149,18 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                         {
                             await CodeGeneratorHelper.AddFileHelper(FileSystem, endpointsFilePath, sourceStream);
                         }*/
+        }
+
+        internal void PrintCommand()
+        {
+            var parseResult = _flowContext.GetValue<ParseResult>(Flow.FlowProperties.ScaffolderCommandParseResult);
+            var commandString = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
+            var nonInteractive = parseResult?.Tokens.Any(x => x.Value.Equals("--non-interactive"));
+            if (!nonInteractive.GetValueOrDefault())
+            {
+                AnsiConsole.WriteLine("To execute the command non-interactively, use:");
+                AnsiConsole.WriteLine($"{_commandlineString}");
+            }
         }
 
         private List<string> GetT4Templates()

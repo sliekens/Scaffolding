@@ -76,18 +76,18 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
             string argumentsString = string.Join(' ', arguments);
             consoleLogger.LogMessage($"{MessageStrings.ExecuteDotnetNew} {argumentsString}", LogMessageLevel.Information);
             //check for minimum dotnet version
-            string dotnetVersion = GetDotnetCommandVersion(consoleLogger);
+            string dotnetVersion = GetDotnetCommandVersion();
             bool validDotnetVersion = true;
 
             if (SemanticVersion.TryParse(dotnetVersion, out var parsedVersion))
             {
                 validDotnetVersion = parsedVersion.CompareTo(MinimumDotnetVersion) >= 0;
                 var validText = validDotnetVersion ? "meets" : "does not meet";
-                consoleLogger.LogMessage($"Found dotnet version ({parsedVersion}). It {validText} the minimum requirement.\n");
+                //consoleLogger.LogMessage($"Found dotnet version ({parsedVersion}). It {validText} the minimum requirement.\n");
             }
             else
             {
-                consoleLogger.LogMessage("Could not find the dotnet version, running the `dotnet new` command anyways.\n");
+                //consoleLogger.LogMessage("Could not find the dotnet version, running the `dotnet new` command anyways.\n");
             }
 
             if (validDotnetVersion)
@@ -102,7 +102,6 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
                 if (result.ExitCode != 0)
                 {
                     consoleLogger.LogMessage(MessageStrings.FailedDotnetNew, LogMessageLevel.Error);
-
                     if (errors != null)
                     {
                         string errorMessage = string.Empty;
@@ -198,55 +197,57 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Cli.Utils
 
         public static void AddPackage(string packageName, string tfm, IConsoleLogger consoleLogger, string packageVersion = null)
         {
-            if (!string.IsNullOrEmpty(packageName) && ((!string.IsNullOrEmpty(packageVersion)) || (!string.IsNullOrEmpty(tfm))))
+            if (string.IsNullOrEmpty(packageName) && (string.IsNullOrEmpty(packageVersion) && string.IsNullOrEmpty(tfm)))
             {
-                var errors = new List<string>();
-                var output = new List<string>();
-                var arguments = new List<string>
-                {
-                    "package",
-                    packageName
-                };
+                return;
+            }
+            
+            var errors = new List<string>();
+            var output = new List<string>();
+            var arguments = new List<string>
+            {
+                "package",
+                packageName
+            };
 
-                if (!string.IsNullOrEmpty(packageVersion))
-                {
-                    arguments.Add("-v");
-                    arguments.Add(packageVersion);
-                }
+            if (!string.IsNullOrEmpty(packageVersion))
+            {
+                arguments.Add("-v");
+                arguments.Add(packageVersion);
+            }
 
-                if (ProjectModelHelper.IsTfmPreRelease(tfm))
-                {
-                    arguments.Add("--prerelease");
-                }
+            if (ProjectModelHelper.IsTfmPreRelease(tfm))
+            {
+                arguments.Add("--prerelease");
+            }
 
-                if (!string.IsNullOrEmpty(tfm))
-                {
-                    arguments.Add("-f");
-                    arguments.Add(tfm);
-                }
+            if (!string.IsNullOrEmpty(tfm))
+            {
+                arguments.Add("-f");
+                arguments.Add(tfm);
+            }
 
-                consoleLogger.LogMessage(string.Format(MessageStrings.AddingPackage, packageName));
+            consoleLogger.LogMessage(string.Format(MessageStrings.AddingPackage, packageName));
 
-                var result = Command.CreateDotNet(
-                    "add",
-                    arguments.ToArray())
-                    .OnErrorLine(e => errors.Add(e))
-                    .OnOutputLine(o => output.Add(o))
-                    .Execute();
+            var result = Command.CreateDotNet(
+                "add",
+                arguments.ToArray())
+                .OnErrorLine(e => errors.Add(e))
+                .OnOutputLine(o => output.Add(o))
+                .Execute();
 
-                if (result.ExitCode != 0)
-                {
-                    consoleLogger.LogMessage($"{MessageStrings.Failed}\n\n", removeNewLine: true);
-                    consoleLogger.LogMessage(string.Format(MessageStrings.FailedAddPackage, packageName));
-                }
-                else
-                {
-                    consoleLogger.LogMessage($"{MessageStrings.Success}\n\n");
-                }
+            if (result.ExitCode != 0)
+            {
+                consoleLogger.LogMessage($"{MessageStrings.Failed}\n\n", removeNewLine: true);
+                consoleLogger.LogMessage(string.Format(MessageStrings.FailedAddPackage, packageName));
+            }
+            else
+            {
+                consoleLogger.LogMessage($"{MessageStrings.Success}\n\n");
             }
         }
 
-        public static string GetDotnetCommandVersion(ILogger consoleLogger)
+        public static string GetDotnetCommandVersion()
         {
             string dotnetVersion = "";
             var errors = new List<string>();
