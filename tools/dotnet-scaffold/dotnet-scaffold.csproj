@@ -32,19 +32,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Templates\MinimalApi\MinimalApiEfGenerator.tt">
+    <None Update="Templates\Endpoints\MinimalApiEfGenerator.tt">
       <LastGenOutput>MinimalApiEfGenerator.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templates\MinimalApi\MinimalApiEfNoClassGenerator.tt">
+    <None Update="Templates\Endpoints\EndpointsEfGenerator.tt">
       <LastGenOutput>MinimalApiEfNoClassGenerator.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templates\MinimalApi\MinimalApiGenerator.tt">
+    <None Update="Templates\Endpoints\MinimalApiGenerator.tt">
       <LastGenOutput>MinimalApiGenerator.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templates\MinimalApi\MinimalApiNoClassGenerator.tt">
+    <None Update="Templates\Endpoints\MinimalApiNoClassGenerator.tt">
       <LastGenOutput>MinimalApiNoClassGenerator.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
@@ -52,6 +52,50 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    <None Pack="true" Include="Templates\MinimalApi\*.tt" Link="Templates\MinimalApi\*.tt" />
+    <None Pack="true" Include="Templates\Endpoints\*.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Templates\MinimalApi\**" />
+    <EmbeddedResource Remove="Templates\MinimalApi\**" />
+    <None Remove="Templates\MinimalApi\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Templates\Endpoints\EndpointsGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EndpointsGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\Endpoints\MinimalApiEfGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MinimalApiEfGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\Endpoints\EndpointsEfGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EndpointsEfGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\Endpoints\MinimalApiGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MinimalApiGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\Endpoints\MinimalApiNoClassGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MinimalApiNoClassGenerator.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\Endpoints\EndpointsEfGenerator.tt">
+      <LastGenOutput>EndpointsEfGenerator.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\Endpoints\EndpointsGenerator.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EndpointsGenerator.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

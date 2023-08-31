@@ -29,7 +29,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
 
             if (chosenTypeName is null || chosenTypeName.Equals("Create"))
             {
-                var prompt = new TextPrompt<string>($"Enter a new {_displayName} (or [lightseagreen]<[/] to go back).")
+                var prompt = new TextPrompt<string>($"Enter a new [hotpink3_1]{_displayName}[/] (or [lightseagreen]<[/] to go back).")
                     .ValidationErrorMessage($"Not a valid {_displayName}")
                     .Validate(x =>
                     {

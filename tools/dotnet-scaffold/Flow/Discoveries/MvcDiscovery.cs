@@ -1,10 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.DotNet.Tools.Scaffold.Commands;
 using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
@@ -40,8 +38,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
         internal Dictionary<string, string> MvcScaffolders => _mvcScaffolders ??=
             new Dictionary<string, string>()
             {
+                { "MVC Area", "MVC Area" },
                 { "MVC Controller - Empty", "MVC Controller - Empty" },
-                { "MVC Cotroller with read/write actions", "MVC Cotroller with read/write actions" },
+                { "MVC Controller with read/write actions", "MVC Cotroller with read/write actions" },
             };
     }
 }

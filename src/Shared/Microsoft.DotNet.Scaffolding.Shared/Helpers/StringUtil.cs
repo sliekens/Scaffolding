@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc
+namespace Microsoft.DotNet.Scaffolding.Shared
 {
     internal static class StringUtil
     {

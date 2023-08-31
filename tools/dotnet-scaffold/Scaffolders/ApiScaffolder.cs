@@ -32,19 +32,17 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
   
         public async Task<int> ExecuteAsync()
         {
-            Debugger.Launch();
             await Task.Delay(1);
             var projectPath = _flowContext.GetValue<string>(Flow.FlowProperties.SourceProjectPath);
-            var apiCommand = _flowContext.GetValue<System.CommandLine.Command>(Flow.FlowProperties.ScaffolderCommand);
+            var apiTemplate = _flowContext.GetValue<string>(Flow.FlowProperties.ApiScaffolderTemplate);
             _commandlineString.Append($"--project-path {projectPath} ");
 
-            if (string.IsNullOrEmpty(projectPath) || apiCommand is null)
+            if (string.IsNullOrEmpty(projectPath) || string.IsNullOrEmpty(apiTemplate))
             {
                 return -1;
             }
 
-            var commandName = apiCommand.Name;
-            switch(commandName)
+            switch(apiTemplate)
             {
                 case "controller":
                     ExecuteEmptyScaffolders();
@@ -102,7 +100,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
 
             _commandlineString.Append($"--model {modelClassType.Name} ");
             _commandlineString.Append($"--endpoints {endpointsClassName} ");
-            _commandlineString.Append($"--non-interactive");
             //try getting endpoints class type
             var endpointsClassType = _flowContext.GetValue<ModelType>($"{Flow.FlowProperties.ExistingClassType}-{Flow.FlowProperties.EndpointsClassName.Replace(" ", "")}");
             if (endpointsClassType is null)
@@ -111,8 +108,13 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 //var endpointsClassType
             }
 
-            var allMinimalApiTemplates = GetT4Templates();
-            var minimalApiTemplatePath = allMinimalApiTemplates.First();
+            Templates.ScaffoldingT4Templates.TryGetValue("api endpoints", out var allMinimalApiTemplates);
+            var minimalApiTemplatePath = allMinimalApiTemplates?.First();
+            if (string.IsNullOrEmpty(minimalApiTemplatePath))
+            {
+                return;
+            }
+
             // var minimalApiTemplatePath = minimalApiTemplates.First(x => x.Contains(GetTemplateName(model, existingEndpointsFile: false)));
             var minimalApiT4Generator = T4TemplateHelper.CreateT4Generator(minimalApiTemplatePath);
             TemplateInvoker templateInvoker = new();
@@ -159,16 +161,8 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             if (!nonInteractive.GetValueOrDefault())
             {
                 AnsiConsole.WriteLine("To execute the command non-interactively, use:");
-                AnsiConsole.WriteLine($"{_commandlineString}");
+                AnsiConsole.Write(new Markup($"'[springgreen1]{_commandlineString.ToString().Trim()}[/]'\n"));
             }
-        }
-
-        private List<string> GetT4Templates()
-        {
-            var baseToolFolder = ScaffolderCommandsHelper.ScaffoldToolFolder;
-            var minimalApiTemplates = ScaffolderCommandsHelper.MinimalApiTemplates.Select(x => Path.Combine(baseToolFolder, x)).ToList();
-            minimalApiTemplates.RemoveAll(path => !File.Exists(path));
-            return minimalApiTemplates;
         }
     }
 }

@@ -19,11 +19,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
 {
     internal static class ScaffolderCommandsHelper
     {
-        internal static List<string> MinimalApiTemplates = new() { MinimalApiEfGenerator, MinimalApiEfNoClassGenerator, MinimalApiGenerator, MinimalApiNoClassGenerator };
-        internal const string MinimalApiEfGenerator = "Templates\\MinimalApi\\MinimalApiEfGenerator.tt";
-        internal const string MinimalApiEfNoClassGenerator = "Templates\\MinimalApi\\MinimalApiEfNoClassGenerator.tt";
-        internal const string MinimalApiGenerator = "Templates\\MinimalApi\\MinimalApiGenerator.tt";
-        internal const string MinimalApiNoClassGenerator = "Templates\\MinimalApi\\MinimalApiNoClassGenerator.tt";
+
         private static string? _scaffoldToolFolder;
         public static string ScaffoldToolFolder => _scaffoldToolFolder ??= GetGlobalFolder();
 
@@ -76,16 +72,34 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         }
     }
 
+    internal static class Templates
+    {
+        //"api endpoints" templates
+        internal const string MinimalApiEfGenerator = "Templates\\MinimalApi\\MinimalApiEfGenerator.tt";
+        internal const string MinimalApiEfNoClassGenerator = "Templates\\MinimalApi\\MinimalApiEfNoClassGenerator.tt";
+        internal const string MinimalApiGenerator = "Templates\\MinimalApi\\MinimalApiGenerator.tt";
+        internal const string MinimalApiNoClassGenerator = "Templates\\MinimalApi\\MinimalApiNoClassGenerator.tt";
+        internal static List<string> MinimalApiTemplates = new() { MinimalApiEfGenerator, MinimalApiEfNoClassGenerator, MinimalApiGenerator, MinimalApiNoClassGenerator };
+        //"razorpage" templates
+        //"api controller" templates
+        //""
+
+        internal static Dictionary<string, List<string>> ScaffoldingT4Templates = new()
+        {
+            { "endpoints", MinimalApiTemplates }
+        };
+    }
+
     internal static class ScaffolderFactory
     {
         internal static IInternalScaffolder CreateInternalScaffolder(string scaffolderName, IFlowContext context)
         {
             return scaffolderName switch
             {
-                "area" => new AreaScaffolder(context),
-                "api" => new ApiScaffolder(context),
                 "mvc" => new MvcScaffolder(context),
                 "mvc controller" => new MvcScaffolder(context),
+                "mvc area" => new MvcScaffolder(context),
+                "api" => new ApiScaffolder(context),
                 "api endpoints" => new ApiScaffolder(context),
                 "api controller" => new ApiScaffolder(context),
                 "razorpages" => new RazorPageScaffolder(context),
@@ -103,7 +117,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             { "API", ApiCommand },
             { "MVC", MvcCommand },
             { "Razor Pages", RazorPagesCommand },
-            { "Area", AreaCommand },
             { "Install", InstallCommand },
             { "Uninstall", UninstallCommand }
         };
@@ -116,14 +129,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             { "razorpages", new List<IFlowStep>() { new RazorPageTypeFlowStep() } },
             { "mvc", new List<IFlowStep>() { new MvcScaffolderTypeFlowStep() } },
             { "mvc controller", new List<IFlowStep>() { new MvcScaffolderTypeFlowStep() } },
-            {
-                "area",
-                new List<IFlowStep>()
-                {
-                    new SourceProjectFlowStep(noBuild: true),
-                    new AreaNameFlowStep()
-                }
-            },
+            { "mvc area", new List<IFlowStep>() { new MvcScaffolderTypeFlowStep() } },
             { "install", new List<IFlowStep>() },
             { "uninstall", new List<IFlowStep>() }
         };
@@ -160,6 +166,12 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new SourceProjectFlowStep(noBuild: true),
             new ControllerNameStep(actions: true)
         };
+
+        public static List<IFlowStep> AreaSteps = new()
+        {
+            new SourceProjectFlowStep(noBuild: true),
+            new AreaNameFlowStep()
+        };
         
         private static Command? _apiCommand;
         public static Command ApiCommand
@@ -179,8 +191,22 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         }
 
         private static Command? _mvcCommand;
-        public static Command MvcCommand =>
-            _mvcCommand ??= new Command("mvc").AddOptions(DefaultCommandOptions.ControllerOptions);
+        public static Command MvcCommand
+        {
+            get
+            {
+                if (_mvcCommand == null)
+                {
+                    _mvcCommand = new Command("mvc");
+                    MvcControllerCommand.Handler = _mvcCommand.Handler;
+                    AreaCommand.Handler = _mvcCommand.Handler;
+                    _mvcCommand.AddCommand(MvcControllerCommand);
+                    _mvcCommand.AddCommand(AreaCommand);
+                }
+
+                return _mvcCommand;
+            }
+        }
 
         private static Command? _razorpagesCommand;
         public static Command RazorPagesCommand
@@ -209,6 +235,16 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
                 }
 
                 return _apiControllerCommand;
+            }
+        }
+
+        private static Command? _mvcControllerCommand;
+        public static Command MvcControllerCommand
+        {
+            get
+            {
+                _mvcControllerCommand ??= new Command("controller").AddOptions(DefaultCommandOptions.ControllerOptions);
+                return _mvcControllerCommand;
             }
         }
 

@@ -34,6 +34,7 @@ namespace Microsoft.DotNet.Tools.Scaffold
 
         public static async Task<int> Main(string[] args)
         {
+
             Debugger.Launch();
             //create root command, add all other nested commands 
             var rootCommand = new RootCommand("scaffold");

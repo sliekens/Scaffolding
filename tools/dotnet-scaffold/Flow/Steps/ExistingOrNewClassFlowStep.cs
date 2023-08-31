@@ -10,7 +10,6 @@ using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
 using Microsoft.DotNet.Tools.Scaffold.Commands;
 using Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries;
-using Spectre.Console;
 using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
@@ -58,15 +57,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
                 return new ValueTask<FlowStepResult>(FlowStepResult.Success);
             }
 
-/*            if (_existingClassProperties.IsRequired)
-            {
-                AnsiConsole.WriteLine($"No {_pickerDisplay} found or selected!");*/
-                return new ValueTask<FlowStepResult>(FlowStepResult.Failure());
-            /*}
-            else
-            {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Success);
-            }*/
+            return new ValueTask<FlowStepResult>(FlowStepResult.Failure());
         }
 
         public ValueTask<FlowStepResult> ValidateUserInputAsync(IFlowContext context, CancellationToken cancellationToken)
@@ -79,11 +70,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
                 var parsedCommand = context.GetValue<ParseResult>(FlowProperties.ScaffolderCommandParseResult);
                 modelClassName = parsedCommand?.GetValueForOptionWithName<string>(command, _option.Name);
             }
-
-/*            if (!_existingClassProperties.IsRequired)
-            {
-                return new ValueTask<FlowStepResult>(FlowStepResult.Success);
-            }*/
 
             if (string.IsNullOrEmpty(modelClassName))
             {

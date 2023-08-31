@@ -28,7 +28,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
         {
             var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
             if (command is null ||
-                (!command.Name.Equals("mvc", StringComparison.OrdinalIgnoreCase)))
+                (!command.Name.Equals("mvc", StringComparison.OrdinalIgnoreCase) &&
+                !command.Name.Equals("area", StringComparison.OrdinalIgnoreCase) &&
+                !command.Name.Equals("controller", StringComparison.OrdinalIgnoreCase)))
             {
                 return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold mvc ...' here"));
             }
@@ -57,7 +59,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             var templateName = context.GetValue<string>(FlowProperties.RazorPageScaffolderTemplate);
 
             if (command is null ||
-                (!command.Name.Equals("razorpage", StringComparison.OrdinalIgnoreCase)))
+                (!command.Name.Equals("mvc", StringComparison.OrdinalIgnoreCase)))
             {
                 return new ValueTask<FlowStepResult>(FlowStepResult.Failure("Scaffolder command is not valid!, should be 'dotnet scaffold mvc ...' here"));
             }
@@ -91,8 +93,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
         internal Dictionary<string, IList<IFlowStep>> MvcScaffolderSteps => _mvcScaffolderSteps ??=
             new Dictionary<string, IList<IFlowStep>>()
             {
+                { "MVC Area", DefaultCommands.AreaSteps },
                 { "MVC Controller - Empty", DefaultCommands.EmptyControllerSteps },
-                { "MVC Controller with read/write actions", DefaultCommands.ActionsController }
+                { "MVC Controller with read/write actions", DefaultCommands.ActionsController },
             };
 
         private void SetMvcScaffolderTypeProperties(IFlowContext context, string mvcScaffolderTemplate)

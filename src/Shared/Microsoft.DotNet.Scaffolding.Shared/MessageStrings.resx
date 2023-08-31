@@ -156,9 +156,6 @@
   <data name="StartFileSystemChangeToken" xml:space="preserve">
     <value>:::Start FileSystemChange:::</value>
   </data>
-  <data name="ExecuteDotnetNew" xml:space="preserve">
-    <value>Executing 'dotnet new'</value>
-  </data>
   <data name="FailedDotnetNew" xml:space="preserve">
     <value>Failed executing `dotnet new`</value>
   </data>

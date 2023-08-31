@@ -28,7 +28,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 
         public ValueTask<FlowStepResult> RunAsync(IFlowContext context, CancellationToken cancellationToken)
         {
-            var prompt = new TextPrompt<string>("Enter new area name (or [lightseagreen]<[/] to go back).")
+            var prompt = new TextPrompt<string>("Enter a new [hotpink3_1]area name[/] (or [lightseagreen]<[/] to go back):")
             .ValidationErrorMessage("Not a valid area name")
             .Validate(x =>
             {

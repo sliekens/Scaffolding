@@ -3,10 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.CommandLine.Parsing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Cli.Utils;
+using Spectre.Console;
 using Spectre.Console.Flow;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Scaffolders
@@ -16,7 +19,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Scaffolders
         public RazorPageScaffolder(IFlowContext flowContext)
         {
             _flowContext = flowContext ?? throw new ArgumentNullException(nameof(flowContext));
-            _commandLineString = new StringBuilder($"dotnet scaffold razorpage ");
+            _commandlineString = new StringBuilder($"dotnet scaffold razorpage ");
         }
 
         public async Task<int> ExecuteAsync()
@@ -40,7 +43,21 @@ namespace Microsoft.DotNet.Tools.Scaffold.Scaffolders
                     break;
             }
 
+            PrintCommand();
+
             return 0;
+        }
+
+        internal void PrintCommand()
+        {
+            var parseResult = _flowContext.GetValue<ParseResult>(Flow.FlowProperties.ScaffolderCommandParseResult);
+            var commandString = _flowContext.GetValue<string>(Flow.FlowProperties.ScaffolderCommandString);
+            var nonInteractive = parseResult?.Tokens.Any(x => x.Value.Equals("--non-interactive"));
+            if (!nonInteractive.GetValueOrDefault())
+            {
+                AnsiConsole.WriteLine("To execute the command non-interactively, use:\n");
+                AnsiConsole.WriteLine($"'[springgreen1]{_commandlineString.ToString().Trim()}[/]'");
+            }
         }
 
         private int ExecuteEmptyRazorPages(string projectFilePath)
@@ -66,6 +83,6 @@ namespace Microsoft.DotNet.Tools.Scaffold.Scaffolders
         }
 
         private readonly IFlowContext _flowContext;
-        private readonly StringBuilder _commandLineString;
+        private readonly StringBuilder _commandlineString;
     }
 }

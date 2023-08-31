@@ -58,7 +58,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries
             new Dictionary<string, Tuple<Command, string>>()
             {
                 { "API Controller - Empty", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Controller - Empty") },
-                { "API Cotroller with read/write actions", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Cotroller with read/write actions") },
+                { "API Controller with read/write actions", Tuple.Create(DefaultCommands.ApiControllerCommand, "API Cotroller with read/write actions") },
                 { "API with read/write endpoints", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "API with read/write endpoints") },
                 { "API with read/write endpoints, using EF", Tuple.Create(DefaultCommands.ApiEndpointsCommand, "API with read/write endpoints, using EF") }
             };

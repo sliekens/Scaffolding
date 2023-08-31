@@ -34,7 +34,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             string? parentCommandName = command.Parents?.FirstOrDefault()?.Name?.Trim();
             if (!string.IsNullOrEmpty(parentCommandName) && !parentCommandName.Equals("dotnet-scaffold"))
             {
-                fullCommandName = $"{parentCommandName}  {fullCommandName}";
+                fullCommandName = $"{parentCommandName} {fullCommandName}".Trim();
             }
 
             await AnsiConsole.Status().WithSpinner()

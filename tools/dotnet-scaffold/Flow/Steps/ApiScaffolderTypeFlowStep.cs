@@ -96,7 +96,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             new Dictionary<string, IList<IFlowStep>>()
             {
                 { "API Controller - Empty", DefaultCommands.EmptyControllerSteps },
-                { "API Cotroller with read/write actions", DefaultCommands.ActionsController },
+                { "API Controller with read/write actions", DefaultCommands.ActionsController },
                 { "API with read/write endpoints", DefaultCommands.EndpointsNoEfSteps },
                 { "API with read/write endpoints, using EF", DefaultCommands.EndpointsWithEfSteps }
             };
