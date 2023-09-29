@@ -1,46 +1,42 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
+using System.Linq;
+using System.Reflection;
 using Microsoft.DotNet.Scaffolding.Shared.T4Templating;
+using Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Templating
 {
     internal static class T4TemplateHelper
     {
-        /*        public static IEnumerable<string> GetTemplateFoldersT4(string appBasePath, string baseFolder, IProjectContext projectContext)
+        public static string GetTemplateT4File(string scaffolderFolderName)
+        {
+            Commands.Templates.ScaffoldingT4Templates.TryGetValue(scaffolderFolderName, out var scaffolderTemplate);
+            var currFolder = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty);
+            while (currFolder is not null)
+            {
+                var contentFolder = currFolder.GetDirectories().FirstOrDefault(x => x.Name.Equals("Content", StringComparison.OrdinalIgnoreCase));
+                if (contentFolder != null)
                 {
-                    return TemplateFoldersUtilities.GetTemplateFolders(
-                        containingProject: Constants.ThisAssemblyName,
-                        applicationBasePath: appBasePath,
-                        baseFolders: new[] { baseFolder },
-                        projectContext: projectContext);
+                    break;
                 }
-        */
-        public static IDictionary<string, List<string>> GetAllRazorPagesT4(string appBasePath, IProjectContext projectContext)
-        {
-            var razorPages = new Dictionary<string, List<string>>();
-            /*            var razorPageTemplatesFolder = GetTemplateFoldersT4(appBasePath, Path.Combine("T4", "RazorPages"), projectContext)?.FirstOrDefault();
-                        if (Directory.Exists(razorPageTemplatesFolder))
-                        {
-                            var templateFiles = Directory.EnumerateFiles(razorPageTemplatesFolder, "*.tt", SearchOption.AllDirectories);
-                            foreach (var razorPageTemplateType in RazorPageTemplates)
-                            {
-                                razorPages.Add(razorPageTemplateType, templateFiles.Where(x => x.Contains(razorPageTemplateType, StringComparison.OrdinalIgnoreCase)).ToList());
-                            }
-                        }*/
-            return razorPages;
-        }
 
-        public static IList<string> GetAllMinimalEndpointsT4(string appBasePath, IProjectContext projectContext)
-        {
-            var minimalEndpointTemplates = new List<string>();
-            /*            var minimalEndpointTemplatesFolder = GetTemplateFoldersT4(appBasePath, Path.Combine("T4", "MinimalApi"), projectContext)?.FirstOrDefault();
-                        if (Directory.Exists(minimalEndpointTemplatesFolder))
-                        {
-                            minimalEndpointTemplates = Directory.EnumerateFiles(minimalEndpointTemplatesFolder, "*.tt", SearchOption.AllDirectories).ToList();
-                        }*/
-            return minimalEndpointTemplates;
+                currFolder = currFolder?.Parent;
+            }
+
+            if (string.IsNullOrEmpty(scaffolderTemplate) || currFolder is null)
+            {
+                return string.Empty;
+            }
+
+            var candidatePath = Path.Combine(currFolder.FullName, "content", scaffolderTemplate);
+            if (File.Exists(candidatePath))
+            {
+                return candidatePath;
+            }
+
+            return string.Empty;
         }
 
         public static IList<string> RazorPageTemplates = new List<string>()
@@ -60,35 +56,27 @@ namespace Microsoft.DotNet.Tools.Scaffold.Templating
                 TemplateFile = templatePath
             };
 
-            ITextTransformation? contextTemplate = null;
-
             string templateName = Path.GetFileNameWithoutExtension(templatePath);
             if (string.IsNullOrEmpty(templateName))
             {
                 return null;
             }
 
-            if (templateName.StartsWith("minimalapi", StringComparison.OrdinalIgnoreCase))
+            ITextTransformation? contextTemplate = null;
+            switch (templateName)
             {
-                contextTemplate = CreateT4MinimalApiTemplate(host, templateName);
+                case "EndpointsGenerator":
+                    contextTemplate = new EndpointsGenerator { Host = host };
+                    contextTemplate.Session = host.CreateSession();
+                    break;
+                case "EndpointsEfGenerator":
+                    contextTemplate = new EndpointsEfGenerator { Host = host };
+                    contextTemplate.Session = host.CreateSession();
+                    break;
+                default:
+                    break;
             }
 
-            //contextTemplate.Session = host.CreateSession();
-
-            return contextTemplate;
-        }
-
-        private static ITextTransformation? CreateT4MinimalApiTemplate(TextTemplatingEngineHost host, string templateName)
-        {
-            ITextTransformation? contextTemplate = null;
-            /*            if (templateName.Equals(nameof(MinimalApiGenerator), StringComparison.OrdinalIgnoreCase))
-                        {
-                            contextTemplate = new MinimalApiGenerator { Host = host };
-                        }
-                        else if (templateName.Equals(nameof(MinimalApiEfGenerator), StringComparison.OrdinalIgnoreCase))
-                        {
-                            contextTemplate = new MinimalApiEfGenerator { Host = host };
-                        }*/
             return contextTemplate;
         }
     }

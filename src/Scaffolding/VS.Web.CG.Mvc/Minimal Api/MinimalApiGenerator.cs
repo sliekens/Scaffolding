@@ -59,7 +59,7 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi
             ProjectContext = projectContext ?? throw new ArgumentNullException(nameof(projectContext));
             Workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
             EntityFrameworkService = entityframeworkService ?? throw new ArgumentNullException(nameof(entityframeworkService));
-            ConsoleLogger = new DotNet.MSIdentity.Shared.ConsoleLogger(jsonOutput: false);
+            ConsoleLogger = new ConsoleLogger(jsonOutput: false);
         }
 
         /// <summary>
@@ -110,7 +110,8 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi
                 //get method block with the api endpoints.
                 string membersBlockText = await CodeGeneratorActionsService.ExecuteTemplate(GetTemplateName(model, existingEndpointsFile: true), TemplateFolders, templateModel);
                 var className = model.EndpintsClassName;
-                await AddEndpointsMethod(membersBlockText, endpointsFilePath, className, templateModel);
+                var endPointsDocument = ModelTypesLocator.GetAllDocuments().FirstOrDefault(d => d.Name.EndsWith(endpointsFilePath));
+                await AddEndpointsMethod(endPointsDocument, membersBlockText, className, templateModel);
 
                 if (modelTypeAndContextModel?.ContextProcessingResult?.ContextProcessingStatus == ContextProcessingStatus.ContextAddedButRequiresConfig)
                 {
@@ -141,110 +142,106 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi
             return outputPath;
         }
 
-        internal async Task AddEndpointsMethod(string membersBlockText, string endpointsFilePath, string className, MinimalApiModel templateModel)
+        internal async Task AddEndpointsMethod(Document document,string membersBlockText,  string className, MinimalApiModel templateModel)
         {
-            if (!string.IsNullOrEmpty(endpointsFilePath) &&
+            if (document != null &&
                 !string.IsNullOrEmpty(membersBlockText) &&
                 !string.IsNullOrEmpty(className) &&
                 templateModel != null)
             {
-                var endPointsDocument = ModelTypesLocator.GetAllDocuments().FirstOrDefault(d => d.Name.EndsWith(endpointsFilePath));
-                if (endPointsDocument != null)
+                var docEditor = await DocumentEditor.CreateAsync(document);
+                if (docEditor is null)
                 {
-                    var docEditor = await DocumentEditor.CreateAsync(endPointsDocument);
-                    if (docEditor is null)
+                    //TODO throw exception
+                    return;
+                }
+
+                //Get class syntax node to add members to the class
+                var docRoot = docEditor.OriginalRoot as CompilationUnitSyntax;
+                //create CodeFile just to add usings
+                var usings = new List<string>();
+                //add usings for DbContext related actins.
+                if (!string.IsNullOrEmpty(templateModel.DbContextNamespace))
+                {
+                    usings.Add(templateModel.DbContextNamespace);
+                }
+
+                if (!string.IsNullOrEmpty(templateModel.ContextTypeName))
+                {
+                    usings.Add(Constants.MicrosoftEntityFrameworkCorePackageName);
+                }
+
+                if (templateModel.OpenAPI)
+                {
+                    usings.Add("Microsoft.AspNetCore.OpenApi");
+                }
+
+                if (templateModel.UseTypedResults)
+                {
+                    usings.Add("Microsoft.AspNetCore.Http.HttpResults");
+                }
+
+                var endpointsCodeFile = new CodeFile { Usings = usings.ToArray() };
+                var docBuilder = new DocumentBuilder(docEditor, endpointsCodeFile, ConsoleLogger);
+                var newRoot = docBuilder.AddUsings(new CodeChangeOptions());
+                var classNode = newRoot.DescendantNodes().FirstOrDefault(node => node is ClassDeclarationSyntax classDeclarationSyntax && classDeclarationSyntax.Identifier.ValueText.Contains(className));
+                //get namespace node just for the namespace name.
+                var namespaceSyntax = classNode?.Parent?.DescendantNodes().FirstOrDefault(node => node is NamespaceDeclarationSyntax nsDeclarationSyntax || node is FileScopedNamespaceDeclarationSyntax fsDeclarationSyntax);
+                templateModel.EndpointsNamespace = string.IsNullOrEmpty(namespaceSyntax?.ToString()) ? templateModel.EndpointsNamespace : namespaceSyntax?.ToString();
+
+                //if a normal ClassDeclarationSyntax, add static method to this class
+                if (classNode != null && classNode is ClassDeclarationSyntax classDeclaration)
+                {
+                    SyntaxNode classParentSyntax = null;
+                    //if class is not static, create a new class in the same file
+                    if (!classDeclaration.Modifiers.Any(x => x.Text.Equals(SyntaxFactory.Token(SyntaxKind.StaticKeyword).Text)))
                     {
-                        //TODO throw exception
-                        return;
+                        classParentSyntax = classDeclaration.Parent;
+                        classDeclaration = SyntaxFactory.ClassDeclaration($"{templateModel.ModelType.Name}Endpoints")
+                            .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
+                            .NormalizeWhitespace()
+                            .WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, SyntaxFactory.CarriageReturnLineFeed);
                     }
 
-                    //Get class syntax node to add members to the class
-                    var docRoot = docEditor.OriginalRoot as CompilationUnitSyntax;
-                    //create CodeFile just to add usings
-                    var usings = new List<string>();
-                    //add usings for DbContext related actins.
-                    if (!string.IsNullOrEmpty(templateModel.DbContextNamespace))
+                    var modifiedClass = classDeclaration.AddMembers(
+                        SyntaxFactory.GlobalStatement(SyntaxFactory.ParseStatement(membersBlockText)).WithLeadingTrivia(SyntaxFactory.Tab));
+
+                    //modify class parent by adding class, classParentSyntax should be null if given class is static.
+                    if (classParentSyntax != null)
                     {
-                        usings.Add(templateModel.DbContextNamespace);
+                        classParentSyntax = classParentSyntax.InsertNodesAfter(classNode.Parent.ChildNodes().Last(), new List<SyntaxNode>() { modifiedClass });
+                        newRoot = newRoot.ReplaceNode(classNode.Parent, classParentSyntax);
                     }
-
-                    if (!string.IsNullOrEmpty(templateModel.ContextTypeName))
-                    {
-                        usings.Add(Constants.MicrosoftEntityFrameworkCorePackageName);
-                    }
-
-                    if (templateModel.OpenAPI)
-                    {
-                        usings.Add("Microsoft.AspNetCore.OpenApi");
-                    }
-
-                    if (templateModel.UseTypedResults)
-                    {
-                        usings.Add("Microsoft.AspNetCore.Http.HttpResults");
-                    }
-
-                    var endpointsCodeFile = new CodeFile { Usings = usings.ToArray() };
-                    var docBuilder = new DocumentBuilder(docEditor, endpointsCodeFile, ConsoleLogger);
-                    var newRoot = docBuilder.AddUsings(new CodeChangeOptions());
-                    var classNode = newRoot.DescendantNodes().FirstOrDefault(node => node is ClassDeclarationSyntax classDeclarationSyntax && classDeclarationSyntax.Identifier.ValueText.Contains(className));
-                    //get namespace node just for the namespace name.
-                    var namespaceSyntax = classNode?.Parent?.DescendantNodes().FirstOrDefault(node => node is NamespaceDeclarationSyntax nsDeclarationSyntax || node is FileScopedNamespaceDeclarationSyntax fsDeclarationSyntax);
-                    templateModel.EndpointsNamespace = string.IsNullOrEmpty(namespaceSyntax?.ToString()) ? templateModel.EndpointsNamespace : namespaceSyntax?.ToString();
-
-                    //if a normal ClassDeclarationSyntax, add static method to this class
-                    if (classNode != null && classNode is ClassDeclarationSyntax classDeclaration)
-                    {
-                        SyntaxNode classParentSyntax = null;
-                        //if class is not static, create a new class in the same file
-                        if (!classDeclaration.Modifiers.Any(x => x.Text.Equals(SyntaxFactory.Token(SyntaxKind.StaticKeyword).Text)))
-                        {
-                            classParentSyntax = classDeclaration.Parent;
-                            classDeclaration = SyntaxFactory.ClassDeclaration($"{templateModel.ModelType.Name}Endpoints")
-                                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
-                                .NormalizeWhitespace()
-                                .WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, SyntaxFactory.CarriageReturnLineFeed);
-                        }
-
-                        var modifiedClass = classDeclaration.AddMembers(
-                            SyntaxFactory.GlobalStatement(SyntaxFactory.ParseStatement(membersBlockText)).WithLeadingTrivia(SyntaxFactory.Tab));
-
-                        //modify class parent by adding class, classParentSyntax should be null if given class is static.
-                        if (classParentSyntax != null)
-                        {
-                            classParentSyntax = classParentSyntax.InsertNodesAfter(classNode.Parent.ChildNodes().Last(), new List<SyntaxNode>() { modifiedClass });
-                            newRoot = newRoot.ReplaceNode(classNode.Parent, classParentSyntax);
-                        }
-                        //modify given class
-                        else
-                        {
-                            newRoot = newRoot.ReplaceNode(classNode, modifiedClass);
-                        }
-                    }
-                    //check if its a minimal class with no class declarations (using top level statements)
+                    //modify given class
                     else
                     {
-                        //create a ClassDeclarationSyntax, add the static endpoints method to the class
-                        var newClassDeclaration = SyntaxFactory.ClassDeclaration($"{templateModel.ModelType.Name}Endpoints")
-                                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
-                                .NormalizeWhitespace()
-                                .WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, SyntaxFactory.CarriageReturnLineFeed);
-                        newClassDeclaration = newClassDeclaration.AddMembers(
-                            SyntaxFactory.GlobalStatement(SyntaxFactory.ParseStatement(membersBlockText)).WithLeadingTrivia(SyntaxFactory.Tab));
-                        //add members at the end of the namespace node.
-                        //replace namespace node in newRoot
-                        newRoot = newRoot.InsertNodesAfter(newRoot.ChildNodes().Last(), new List<SyntaxNode> { newClassDeclaration });
+                        newRoot = newRoot.ReplaceNode(classNode, modifiedClass);
                     }
+                }
+                //check if its a minimal class with no class declarations (using top level statements)
+                else
+                {
+                    //create a ClassDeclarationSyntax, add the static endpoints method to the class
+                    var newClassDeclaration = SyntaxFactory.ClassDeclaration($"{templateModel.ModelType.Name}Endpoints")
+                            .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
+                            .NormalizeWhitespace()
+                            .WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, SyntaxFactory.CarriageReturnLineFeed);
+                    newClassDeclaration = newClassDeclaration.AddMembers(
+                        SyntaxFactory.GlobalStatement(SyntaxFactory.ParseStatement(membersBlockText)).WithLeadingTrivia(SyntaxFactory.Tab));
+                    //add members at the end of the namespace node.
+                    //replace namespace node in newRoot
+                    newRoot = newRoot.InsertNodesAfter(newRoot.ChildNodes().Last(), new List<SyntaxNode> { newClassDeclaration });
+                }
 
-                    docEditor.ReplaceNode(docRoot, newRoot);
-                    var classFileSourceTxt = await docEditor.GetChangedDocument()?.GetTextAsync();
-                    var classFileTxt = classFileSourceTxt?.ToString();
-                    if (!string.IsNullOrEmpty(classFileTxt))
-                    {
-                        //write to endpoints class path.
-                        FileSystem.WriteAllText(endPointsDocument.FilePath, classFileTxt);
-                        //add app.Map statement to Program.cs
-                        await ModifyProgramCs(templateModel);
-                    }
+                docEditor.ReplaceNode(docRoot, newRoot);
+                var classFileSourceTxt = await docEditor.GetChangedDocument()?.GetTextAsync();
+                var classFileTxt = classFileSourceTxt?.ToString();
+                if (!string.IsNullOrEmpty(classFileTxt))
+                {
+                    //write to endpoints class path.
+                    FileSystem.WriteAllText(document.FilePath, classFileTxt);
+                    //add app.Map statement to Program.cs
+                    await ModifyProgramCs(templateModel);
                 }
             }
         }

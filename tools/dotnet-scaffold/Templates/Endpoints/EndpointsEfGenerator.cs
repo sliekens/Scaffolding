@@ -37,11 +37,10 @@ namespace Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints
     string createModel = $"Create{@modelName}";
     string updateModel = $"Update{@modelName}";
     string dbContextName = Model.ContextTypeName;
-    var entitySetName = Model.ModelMetadata.EntitySetName;
-    var primaryKeyName = Model.ModelMetadata.PrimaryKeys[0].PropertyName;
+    var entitySetName = "entityset";
+    var primaryKeyName = "primarykey";
     var primaryKeyNameLowerCase = primaryKeyName.ToLowerInvariant();
-    var primaryKeyShortTypeName = Model.ModelMetadata.PrimaryKeys[0].ShortTypeName;
-    var primaryKeyType = Model.ModelMetadata.PrimaryKeys[0].TypeName;
+    var primaryKeyShortTypeName = "primarykeyshort";
     var modelToList = $"{@entitySetName}.ToListAsync()";
     var findModel = $"{@entitySetName}.FindAsync({@primaryKeyNameLowerCase})";
     var add = $"{@entitySetName}.Add({@Model.ModelVariable})";
@@ -244,12 +243,12 @@ namespace Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints
             }
         }
 
-private global::Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi.MinimalApiModel _ModelField;
+private global::Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints.EndpointsModel _ModelField;
 
 /// <summary>
 /// Access the Model parameter of the template.
 /// </summary>
-private global::Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi.MinimalApiModel Model
+private global::Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints.EndpointsModel Model
 {
     get
     {
@@ -268,7 +267,7 @@ public virtual void Initialize()
 bool ModelValueAcquired = false;
 if (this.Session.ContainsKey("Model"))
 {
-    this._ModelField = ((global::Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi.MinimalApiModel)(this.Session["Model"]));
+    this._ModelField = ((global::Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints.EndpointsModel)(this.Session["Model"]));
     ModelValueAcquired = true;
 }
 if ((ModelValueAcquired == false))
@@ -276,11 +275,11 @@ if ((ModelValueAcquired == false))
     string parameterValue = this.Host.ResolveParameterValue("Property", "PropertyDirectiveProcessor", "Model");
     if ((string.IsNullOrEmpty(parameterValue) == false))
     {
-        global::System.ComponentModel.TypeConverter tc = global::System.ComponentModel.TypeDescriptor.GetConverter(typeof(global::Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi.MinimalApiModel));
+        global::System.ComponentModel.TypeConverter tc = global::System.ComponentModel.TypeDescriptor.GetConverter(typeof(global::Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints.EndpointsModel));
         if (((tc != null) 
                     && tc.CanConvertFrom(typeof(string))))
         {
-            this._ModelField = ((global::Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi.MinimalApiModel)(tc.ConvertFrom(parameterValue)));
+            this._ModelField = ((global::Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints.EndpointsModel)(tc.ConvertFrom(parameterValue)));
             ModelValueAcquired = true;
         }
         else
@@ -293,10 +292,10 @@ if ((ModelValueAcquired == false))
 }
 if ((ModelValueAcquired == false))
 {
-    object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("Model");
+    object data = global::Microsoft.DotNet.Scaffolding.Shared.T4Templating.CallContext.LogicalGetData("Model");
     if ((data != null))
     {
-        this._ModelField = ((global::Microsoft.VisualStudio.Web.CodeGenerators.Mvc.MinimalApi.MinimalApiModel)(data));
+        this._ModelField = ((global::Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints.EndpointsModel)(data));
     }
 }
 

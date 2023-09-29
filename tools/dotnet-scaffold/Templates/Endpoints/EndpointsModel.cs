@@ -6,21 +6,16 @@ using System.Collections.Generic;
 using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Templates.MinimalApi
+namespace Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints
 {
-    public class MinimalApiModel
+    public class EndpointsModel
     {
-        public MinimalApiModel(
+        public EndpointsModel(
            ModelType modelType,
-           string dbContextFullTypeName,
-           string endpointsFullTypeName)
+           string endpointsFullTypeName,
+           string? dbContextFullTypeName = null)
         {
-            if (string.IsNullOrEmpty(dbContextFullTypeName))
-            {
-                DbContextNamespace = string.Empty;
-                ContextTypeName = string.Empty;
-            }
-            else
+            if (!string.IsNullOrEmpty(dbContextFullTypeName))
             {
                 var classNameModel = new ClassNameModel(dbContextFullTypeName);
                 DbContextNamespace = classNameModel.NamespaceName;
@@ -61,7 +56,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Templates.MinimalApi
         public ModelType ModelType { get; private set; }
 
         //DbContext class' name
-        public string ContextTypeName { get; private set; }
+        public string? ContextTypeName { get; private set; }
 
         //Model class' name
         public string ModelTypeName
@@ -78,7 +73,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Templates.MinimalApi
         //variable name holding the models in the DbContext class
         public string EntitySetVariable => ContextTypeName.ToLowerInvariantFirstChar();
 
-        public string DbContextNamespace { get; private set; }
+        public string? DbContextNamespace { get; private set; }
 
         //namespaces to add in Endpoints file.
         public HashSet<string?> RequiredNamespaces

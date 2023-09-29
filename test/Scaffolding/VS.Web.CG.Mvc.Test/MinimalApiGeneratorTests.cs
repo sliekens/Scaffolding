@@ -145,14 +145,15 @@ namespace Microsoft.VisualStudio.Web.CodeGenerators.Mvc
         {
             var minimalApiGenerator = CreateMinimalApiGenerator();
             var modelType = modelTypesLocator.GetType("Car").FirstOrDefault();
-            var endpointsPath = modelTypesLocator.GetAllDocuments().FirstOrDefault(d => d.Name.Contains($"{EndpointsClassName}.cs"));
+            var endpointsDocument = modelTypesLocator.GetAllDocuments().FirstOrDefault(d => d.Name.Contains($"{EndpointsClassName}.cs"));
             var minimalApiModel = new MinimalApiModel(modelType, string.Empty, EndpointsClassName)
             {
                 EndpointsName = EndpointsClassName,
                 EndpointsNamespace = "MinimalApiTest",
                 MethodName = "MapCarEndpoints"
             };
-            await minimalApiGenerator.AddEndpointsMethod(MsBuildProjectStrings.EndpointsMethod, endpointsPath.Name, EndpointsClassName, minimalApiModel);
+
+            await minimalApiGenerator.AddEndpointsMethod(endpointsDocument, MsBuildProjectStrings.EndpointsMethod, EndpointsClassName, minimalApiModel);
             string endpointsCsText = fileSystem.ReadAllText("Endpoints.cs");
             string programCsText = fileSystem.ReadAllText("Program.cs");
             Assert.Contains(minimalApiModel.MethodName, endpointsCsText);

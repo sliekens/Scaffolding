@@ -75,18 +75,16 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
     internal static class Templates
     {
         //"api endpoints" templates
-        internal const string MinimalApiEfGenerator = "Templates\\MinimalApi\\MinimalApiEfGenerator.tt";
-        internal const string MinimalApiEfNoClassGenerator = "Templates\\MinimalApi\\MinimalApiEfNoClassGenerator.tt";
-        internal const string MinimalApiGenerator = "Templates\\MinimalApi\\MinimalApiGenerator.tt";
-        internal const string MinimalApiNoClassGenerator = "Templates\\MinimalApi\\MinimalApiNoClassGenerator.tt";
-        internal static List<string> MinimalApiTemplates = new() { MinimalApiEfGenerator, MinimalApiEfNoClassGenerator, MinimalApiGenerator, MinimalApiNoClassGenerator };
+        internal const string EndpointsEfGenerator = "Templates\\Endpoints\\EndpointsEfGenerator.tt";
+        internal const string EndpointsGenerator = "Templates\\Endpoints\\EndpointsGenerator.tt";
         //"razorpage" templates
         //"api controller" templates
         //""
 
-        internal static Dictionary<string, List<string>> ScaffoldingT4Templates = new()
+        internal static Dictionary<string, string> ScaffoldingT4Templates = new()
         {
-            { "endpoints", MinimalApiTemplates }
+            { "API with read/write endpoints", EndpointsGenerator },
+            { "API with read/write endpoints, using EF", EndpointsEfGenerator },
         };
     }
 

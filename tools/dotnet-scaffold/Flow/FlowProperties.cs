@@ -25,7 +25,10 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow
         internal const string ControllerName = nameof(ControllerName);
         internal const string RazorPageName = nameof(RazorPageName);
         internal const string ActionsController = nameof(ActionsController);
+        //api options
         internal const string EndpointsClassName = nameof(EndpointsClassName);
+        internal const string EndpointsScaffolderOptions = nameof(EndpointsScaffolderOptions);
+
         //display names
         internal const string ModelClassDisplayName = "Model Class";
         internal const string EndpointsClassDisplayName = "Endpoints Class";

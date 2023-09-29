@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.Linq;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 
@@ -10,10 +11,9 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Project
     public class ModelType
     {
         public string Namespace { get; set; }
-
         public string Name { get; set; }
-
         public string FullName { get; set; }
+        public string FullPath { get; set; }
 
         public string PluralName => Name?.Pluralize(inputIsKnownToBeSingular: false);
         public ITypeSymbol BaseType { get; set; }
@@ -38,8 +38,9 @@ namespace Microsoft.DotNet.Scaffolding.Shared.Project
                     ? string.Empty
                     : typeSymbol.ContainingNamespace.ToDisplayString(),
                 TypeSymbol = typeSymbol,
-                BaseType = typeSymbol.BaseType
-            };
+                BaseType = typeSymbol.BaseType,
+                FullPath = typeSymbol.Locations.FirstOrDefault()?.SourceTree?.FilePath
+        };
         }
     }
 }
