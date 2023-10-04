@@ -9,13 +9,15 @@ using System.IO;
 using System.Linq;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
+using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Extensions;
 using Microsoft.DotNet.Tools.Scaffold.Flow.Steps;
 using Microsoft.DotNet.Tools.Scaffold.Scaffolders;
 using Microsoft.Extensions.ProjectModel;
 using Spectre.Console;
 using Spectre.Console.Flow;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Commands
+namespace Microsoft.DotNet.Tools.Scaffold.Helpers
 {
     internal static class ScaffolderCommandsHelper
     {
@@ -27,7 +29,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         {
             //install target, override file if needed, easier and low cost regardless.
             var projectDir = Path.GetDirectoryName(projectPath);
-            if (!string.IsNullOrEmpty(projectDir) )
+            if (!string.IsNullOrEmpty(projectDir))
             {
                 ScaffoldTargetsInstaller.EnsureTargetImported(
                     Path.GetFileName(projectPath),
@@ -74,17 +76,22 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
 
     internal static class Templates
     {
-        //"api endpoints" templates
+        //"api endpoints" T4 templates
         internal const string EndpointsEfGenerator = "Templates\\Endpoints\\EndpointsEfGenerator.tt";
         internal const string EndpointsGenerator = "Templates\\Endpoints\\EndpointsGenerator.tt";
         //"razorpage" templates
         //"api controller" templates
         //""
 
+        //api template types
+        internal const string EmptyApiController = "API Controller - Empty";
+        internal const string ActionsApiController = "API Controller with read/write actions";
+        internal const string ApiEndpoints = "API with read/write endpoints";
+        internal const string ApiEndpointsWithEf = "API with read/write endpoints, using EF";
         internal static Dictionary<string, string> ScaffoldingT4Templates = new()
         {
-            { "API with read/write endpoints", EndpointsGenerator },
-            { "API with read/write endpoints, using EF", EndpointsEfGenerator },
+            { ApiEndpoints, EndpointsGenerator },
+            { ApiEndpointsWithEf, EndpointsEfGenerator },
         };
     }
 
@@ -137,6 +144,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new SourceProjectFlowStep(),
             new ModelClassPickerFlowStep("Model Class"),
             new ExistingOrNewClassFlowStep("Endpoints Class", new ExistingClassProperties { IsStatic = true }, DefaultCommandOptions.EndpointsClass),
+            new EndpointsScaffolderOptionsFlowStep(),
             new ExistingOrNewClassFlowStep("DbContext Class", new ExistingClassProperties { BaseClass = "Microsoft.EntityFrameworkCore.DbContext"}, DefaultCommandOptions.DbContext)
         };
 
@@ -145,6 +153,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new SourceProjectFlowStep(),
             new ModelClassPickerFlowStep("Model Class"),
             new ExistingOrNewClassFlowStep("Endpoints Class", new ExistingClassProperties { IsStatic = true }, DefaultCommandOptions.EndpointsClass),
+            new EndpointsScaffolderOptionsFlowStep()
         };
 
         public static List<IFlowStep> EmptyControllerSteps = new()
@@ -170,7 +179,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             new SourceProjectFlowStep(noBuild: true),
             new AreaNameFlowStep()
         };
-        
+
         private static Command? _apiCommand;
         public static Command ApiCommand
         {
@@ -343,7 +352,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             EndpointsClass,
             OpenApi,
             EndpointsNamespace,
-            NoTypedResults
+            TypedResults
         };
 
         public static List<Option> AreaOptions = new(ScaffolderOptions)
@@ -367,7 +376,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         public static Option<string> Name => new("--name");
         public static Option<bool> Force => new("--force");
         public static Option<string> RelativeFolderPath => new("--relativeFolderPath");
-        public static Argument<string> Template = new("template") { Arity = ArgumentArity.ZeroOrMore };
+        public static Argument<string> Template = new("template") { Arity = ArgumentArity.ExactlyOne };
         //model with dbcontext
         public static Option<string> Model => new("--model");
         public static Option<string> DbContext => new("--dbContext");
@@ -376,62 +385,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
         public static Argument<string> CrudOperation => new();
         //endpoints
         public static Option<string> EndpointsClass => new("--endpoints-class");
-        public static Option<bool> OpenApi => new("--open");
+        public static Option<bool?> OpenApi => new("--openapi");
         public static Option<string> EndpointsNamespace => new("--endpointsNamespace");
-        public static Option<bool> NoTypedResults => new("--noTypedResults");
+        public static Option<bool?> TypedResults => new("--typed-results");
         public static Option<string> AddSource => new("--add-source");
-
-        internal static string GetDefaultTemplateName()
-        {
-            return "default";
-        }
-    }
-
-    internal static class SystemCommandExtensions
-    {
-        internal static T? GetValueForOptionWithName<T>(this ParseResult parseResult, Command? command, string optionName) where T : class
-        {
-            T? optionValue = default;
-            if (command is null || string.IsNullOrEmpty(optionName))
-            {
-                return optionValue;
-            }
-            Option<T>? optionToCheckFor = command?.Options.FirstOrDefault(x => x.Name.Equals(optionName)) as Option<T>;
-
-            if (optionToCheckFor != null)
-            {
-                optionValue = parseResult?.GetValueForOption(optionToCheckFor);
-            }
-
-            return optionValue;
-        }
-
-        internal static T? GetValueForArgumentWithName<T>(this ParseResult parseResult, Command? command, string argName) where T : class
-        {
-            T? argValue = default;
-            if (command is null || string.IsNullOrEmpty(argName))
-            {
-                return argValue;
-            }
-            Argument<T>? argToCheckFor = command?.Arguments.FirstOrDefault(x => x.Name.Equals(argName)) as Argument<T>;
-
-            if (argToCheckFor != null)
-            {
-                argValue = parseResult?.GetValueForArgument(argToCheckFor);
-            }
-
-            return argValue;
-        }
-
-        internal static List<Command> GetAllCommandsAndSubcommands(this List<Command> commands)
-        {
-            var allCommands = new List<Command>();
-            foreach (var command in commands)
-            {
-                allCommands.Add(command);
-                allCommands.AddRange(command.Subcommands.ToList().GetAllCommandsAndSubcommands());
-            }
-            return allCommands;
-        }
     }
 }

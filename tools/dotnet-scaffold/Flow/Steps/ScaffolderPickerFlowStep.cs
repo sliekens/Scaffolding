@@ -4,10 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.DotNet.Tools.Scaffold.Commands;
 using Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries;
+using Microsoft.DotNet.Tools.Scaffold.Helpers;
 using Microsoft.DotNet.Tools.Scaffold.Services;
 using Spectre.Console.Flow;
 
@@ -74,14 +75,24 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 
         private IEnumerable<IFlowStep>? GetSteps(Command? command)
         {
-            IEnumerable<IFlowStep>? stepDefinitions = null;
-            if (command != null &&
-                DefaultCommands.DefaultCommandStepsDict.TryGetValue(command.Name, out var steps))
+            if (command == null)
             {
-                stepDefinitions = steps;
+                return null;
+            }    
+            //get full command name
+            string fullCommandName = command.Name.Trim();
+            string? parentCommandName = command.Parents?.FirstOrDefault()?.Name?.Trim();
+            if (!string.IsNullOrEmpty(parentCommandName) && !parentCommandName.Equals("dotnet-scaffold"))
+            {
+                fullCommandName = $"{parentCommandName} {fullCommandName}".Trim();
             }
 
-            return stepDefinitions;
+            if (DefaultCommands.DefaultCommandStepsDict.TryGetValue(fullCommandName, out var steps))
+            {
+                return steps;
+            }
+
+            return  null;
         }
 
         private void SetScaffolderCommandProperties(IFlowContext context, Command command)

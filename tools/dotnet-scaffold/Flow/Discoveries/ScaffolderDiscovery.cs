@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
-using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Helpers;
 using Microsoft.DotNet.Tools.Scaffold.Services;
 using Spectre.Console.Flow;
 

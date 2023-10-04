@@ -3,17 +3,17 @@
 
 using Spectre.Console;
 
-namespace Microsoft.DotNet.Tools.Scaffold
+namespace Microsoft.DotNet.Tools.Scaffold.Extensions
 {
     public static class SpectreExtensions
     {
-        public static Status WithSpinner(this Status status)
+/*        public static Status WithSpinner(this Status status)
         {
             var style = Style.Parse("lightseagreen");
             return status
                 .AutoRefresh(true)
                 .Spinner(Spinner.Known.Aesthetic)
                 .SpinnerStyle(style);
-        }
+        }*/
     }
 }

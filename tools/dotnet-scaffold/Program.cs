@@ -10,7 +10,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Extensions;
+using Microsoft.DotNet.Tools.Scaffold.Helpers;
 using Microsoft.DotNet.Tools.Scaffold.Services;
 
 namespace Microsoft.DotNet.Tools.Scaffold

@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Helpers;
 using Spectre.Console;
 using Spectre.Console.Flow;
 

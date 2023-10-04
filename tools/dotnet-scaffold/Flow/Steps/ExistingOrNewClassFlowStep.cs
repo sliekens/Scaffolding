@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
 using Microsoft.DotNet.Tools.Scaffold.Commands;
+using Microsoft.DotNet.Tools.Scaffold.Extensions;
 using Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries;
 using Spectre.Console.Flow;
 
@@ -68,7 +69,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             {
                 var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
                 var parsedCommand = context.GetValue<ParseResult>(FlowProperties.ScaffolderCommandParseResult);
-                modelClassName = parsedCommand?.GetValueForOptionWithName<string>(command, _option.Name);
+                modelClassName = parsedCommand?.GetClassValueForOptionWithName<string>(command, _option.Name);
             }
 
             if (string.IsNullOrEmpty(modelClassName))

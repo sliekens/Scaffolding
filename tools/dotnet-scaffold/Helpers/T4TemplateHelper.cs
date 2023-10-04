@@ -6,13 +6,13 @@ using System.Reflection;
 using Microsoft.DotNet.Scaffolding.Shared.T4Templating;
 using Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints;
 
-namespace Microsoft.DotNet.Tools.Scaffold.Templating
+namespace Microsoft.DotNet.Tools.Scaffold.Helpers
 {
     internal static class T4TemplateHelper
     {
         public static string GetTemplateT4File(string scaffolderFolderName)
         {
-            Commands.Templates.ScaffoldingT4Templates.TryGetValue(scaffolderFolderName, out var scaffolderTemplate);
+            Templates.ScaffoldingT4Templates.TryGetValue(scaffolderFolderName, out var scaffolderTemplate);
             var currFolder = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty);
             while (currFolder is not null)
             {

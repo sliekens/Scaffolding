@@ -25,13 +25,14 @@ using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.DotNet.Scaffolding.Shared.T4Templating;
 using Microsoft.DotNet.Tools.Scaffold.Scaffolders;
 using Microsoft.DotNet.Tools.Scaffold.Templates.Endpoints;
-using Microsoft.DotNet.Tools.Scaffold.Templating;
 using Spectre.Console;
 using Spectre.Console.Flow;
 using Project = Microsoft.CodeAnalysis.Project;
 using Document = Microsoft.CodeAnalysis.Document;
 using Microsoft.Build.Evaluation;
 using System.Xml.Linq;
+using Microsoft.DotNet.Tools.Scaffold.Flow.Steps;
+using Microsoft.DotNet.Tools.Scaffold.Helpers;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Commands
 {
@@ -112,14 +113,16 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             var modelClassType = _flowContext.GetValue<ModelType>($"{Flow.FlowProperties.ModelClassType}-{Flow.FlowProperties.ModelClassDisplayName.Replace(" ", "")}");
             //get endpoints class name
             var endpointsClassName = _flowContext.GetValue<string>($"{Flow.FlowProperties.ExistingClassName}-{Flow.FlowProperties.EndpointsClassDisplayName.Replace(" ", "")}");
-            //get openapi disabling
-            var openapi = _flowContext.GetValue<bool>(Flow.FlowProperties.EndpointsOpenApi);
-            //get openapi disabling
-            var typedResults = _flowContext.GetValue<bool>(Flow.FlowProperties.EndpointsTypedResults);
+            //get endpoints options
+            var endpointsOptions = _flowContext.GetValue<EndpointsScaffolderOptions>(Flow.FlowProperties.EndpointsScaffolderOptions);
             //get dbcontext if its being used
             var dbContextClassType = _flowContext.GetValue<ModelType>($"{Flow.FlowProperties.ExistingClassType}-{Flow.FlowProperties.DbContextClassDisplayName.Replace(" ", "")}");
 
-            if (roslynWorkspace is null || roslynProject is null || modelClassType is null || string.IsNullOrEmpty(endpointsClassName))
+            if (roslynWorkspace is null ||
+                roslynProject is null ||
+                modelClassType is null ||
+                endpointsOptions is null ||
+                string.IsNullOrEmpty(endpointsClassName))
             {
                 return;
             }
@@ -145,9 +148,9 @@ namespace Microsoft.DotNet.Tools.Scaffold.Commands
             var templateModel = new EndpointsModel(modelClassType, endpointsClassName)
             {
                 NullableEnabled = "enable".Equals(projectContext?.Nullable, StringComparison.OrdinalIgnoreCase),
-                OpenAPI = openapi,
+                OpenAPI = endpointsOptions.OpenApi,
                 MethodName = $"Map{modelClassType.Name}Endpoints",
-                UseTypedResults = typedResults
+                UseTypedResults = endpointsOptions.TypedResults
             };
 
             var dictParams = new Dictionary<string, object>()

@@ -7,11 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Spectre.Console;
 using Spectre.Console.Flow;
-using Microsoft.DotNet.Tools.Scaffold.Commands;
 using Microsoft.DotNet.Tools.Scaffold.Flow.Discoveries;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using Microsoft.DotNet.Scaffolding.Shared.Project.Workspaces;
+using Microsoft.DotNet.Tools.Scaffold.Extensions;
+using Microsoft.DotNet.Tools.Scaffold.Helpers;
 
 namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
 {
@@ -71,7 +72,7 @@ namespace Microsoft.DotNet.Tools.Scaffold.Flow.Steps
             {
                 var command = context.GetValue<Command>(FlowProperties.ScaffolderCommand);
                 var parsedCommand = context.GetValue<ParseResult>(FlowProperties.ScaffolderCommandParseResult);
-                projectPath = parsedCommand?.GetValueForOptionWithName<string>(command, "project-path");
+                projectPath = parsedCommand?.GetClassValueForOptionWithName<string>(command, "project-path");
             }
 
             if (string.IsNullOrEmpty(projectPath))
