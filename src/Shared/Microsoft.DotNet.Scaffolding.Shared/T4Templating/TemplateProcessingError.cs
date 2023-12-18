@@ -34,13 +34,5 @@ namespace Microsoft.DotNet.Scaffolding.Shared.T4Templating
             get;
             set;
         }
-
-        /// <summary>
-        /// Overriding base implementation.
-        /// </summary>
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.CurrentCulture, "ABCD", Message, LineNumber, ColumnNumber);
-        }
     }
 }
